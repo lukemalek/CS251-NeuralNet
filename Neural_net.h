@@ -86,7 +86,7 @@ class Network
 
     //Here it fuckin goes
     Network gradient(vector<float> wantedOutput);
-
+    
 };
 
 #endif // _NEURAL_NET_

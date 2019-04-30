@@ -362,3 +362,29 @@ Network Network::gradient(vector<float> wo)
     return grad;
 
 }
+void Network::learn()
+{
+    vector<float> * trainingData;
+    int subsetSize;
+    //init temporary gradient network
+    vector<int> v;
+    for (unsigned int i = 0; i<layers; i++)
+    {
+        v.push_back(myNet[i]->getSize());
+    }
+    Network temp(v, false);
+
+    
+    for(int i = 0; i< subsetSize; i++)
+    {
+        temp += gradient(trainingData[i]);
+
+    }
+    //makes an average gradient
+    temp /= subsetSize;
+     
+    *this-= temp;
+
+
+
+}
