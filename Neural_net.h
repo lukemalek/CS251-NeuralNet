@@ -86,7 +86,8 @@ class Network
 
     //Here it fuckin goes
     Network gradient(vector<float> wantedOutput);
-    
+    //sudocode for the actual learning process
+    void learn();
 };
 
 #endif // _NEURAL_NET_
