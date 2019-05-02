@@ -149,6 +149,16 @@ void Node::setActivation(float a)
         a = 1;
     activation = a;
 }
+void Node::setWeights(float* weights)
+{
+    if(ws) delete[] ws;
+
+    ws = new float[lBefore->getSize()];
+    for(unsigned int i = 0; i< lBefore->getSize(); i++)
+    {
+        ws[i] = weights[i];
+    }
+}
 void Node::printWeights(ostream &o)
 {
     for(unsigned int i = 0; i< lBefore->getSize(); i++) o<<fixed<< ws[i]<< '\n';
@@ -359,9 +369,45 @@ Network Network::gradient(vector<float> wo)
 
 
     Network grad(v,false);
+
+
+    //this loop starts at the outermost layer and works in
+    for(int i = v.size() -1; i> 0; i--)
+    {
+
+        //this loop will run for each node
+        for(int j = 0; j< v[i]; j++)
+        {
+            float currentActivation = (*myNet[i])[j].getActivation();
+            Node gradientNode(myNet[i-1], false);
+            float biasGradient, * weightGradients = new float[v[i-1]];
+            
+            biasGradient = dCostdActivation(i,j) * currentActivation * (1-currentActivation);
+            
+            //for every weight
+            for(int k = 0; k< v[i-1]; k++ )
+            {
+                weightGradients[k] = dCostdActivation(i,j) * currentActivation * (1-currentActivation) * (*myNet[i])[k].getActivation();
+            }
+
+
+            //wrapping everything up and setting a node to it's gradient in the returned network
+            gradientNode.setWeights(weightGradients);
+            gradientNode.setBias(biasGradient);
+            (*grad.myNet[i])[j] = gradientNode;
+            delete[] weightGradients;
+        }
+    }
+
+
     return grad;
 
 }
+float Network::dCostdActivation(int layer, int node)
+{
+    return 1;
+}
+
 void Network::learn()
 {
     vector<float> * trainingData;
@@ -377,6 +423,7 @@ void Network::learn()
     
     for(int i = 0; i< subsetSize; i++)
     {
+        evaluate();
         temp += gradient(trainingData[i]);
 
     }
