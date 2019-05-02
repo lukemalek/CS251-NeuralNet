@@ -8,8 +8,8 @@ double sigP(double x, double steepness)
 {
     // defined the value of e^(-steepness * x) so the computer
     // wouldnt have to do it three times in the function
-    double eToTheNegsx = pow(M_E,- steepness*x);
-    return (steepness * eToTheNegsx)/( (1 + eToTheNegsx) * (1 + eToTheNegsx) );
+    double activation = sig(x,steepness);
+    return steepness * activation* (1-activation);
 }
 
 float rnum()
