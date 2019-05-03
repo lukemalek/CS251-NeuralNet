@@ -126,6 +126,14 @@ Node& Node::operator-=(const Node &a)
     }
     return *this;
 }
+float Node::getWeight(int n)
+{
+    if(ws)
+    {
+        return ws[n];
+    }
+    return 0;
+}
 float Node::calcActivation()
 {
     //sets AND returns the activation of the node
@@ -382,12 +390,13 @@ Network Network::gradient(vector<float> wo)
             Node gradientNode(myNet[i-1], false);
             float biasGradient, * weightGradients = new float[v[i-1]];
             
-            biasGradient = dCostdActivation(i,j) * currentActivation * (1-currentActivation);
+            float dCdA = dCostdActivation(i,j,wo);
+            biasGradient = dCdA * currentActivation * (1-currentActivation);
             
             //for every weight
             for(int k = 0; k< v[i-1]; k++ )
             {
-                weightGradients[k] = dCostdActivation(i,j) * currentActivation * (1-currentActivation) * (*myNet[i])[k].getActivation();
+                weightGradients[k] = dCdA * currentActivation * (1-currentActivation) * (*myNet[i])[k].getActivation();
             }
 
 
@@ -403,9 +412,27 @@ Network Network::gradient(vector<float> wo)
     return grad;
 
 }
-float Network::dCostdActivation(int layer, int node)
+float Network::dCostdActivation(int l, int n,vector<float> wantO)
 {
-    return 1;
+    int iterations = layers - l;
+    float value;
+    if(iterations == 1)
+    {
+        value = (*myNet[l])[n].getActivation() - wantO[n] ;
+        return value;
+    }
+    if(iterations == 2)
+    {
+        for(unsigned int i = 0; i< wantO.size(); i++)
+        {
+
+            value += dCostdActivation(l + 1, i,wantO) *  (*myNet[l+1])[i].getActivation()* (1- (*myNet[l+1])[i].getActivation()) * (*myNet[l+1])[i].getWeight(n);
+        }
+        return value;
+    }
+
+    return 0;
+
 }
 
 void Network::learn()

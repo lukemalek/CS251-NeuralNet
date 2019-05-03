@@ -26,6 +26,7 @@ class Node
     void setActivation(float a);
     void setBias(float newBias){b = newBias;}
     void setWeights(float * weights);
+    float getWeight(int n);
     float calcActivation();
     float getActivation(){return activation;}
     void printWeights(ostream &o);
@@ -80,7 +81,7 @@ class Network
     Network& operator*=(float a);
     Network& operator/=(float a);
 
-    float dCostdActivation(int layer, int node);
+    float dCostdActivation(int layer, int node, vector<float> wantedOutput);
     void evaluate();
     void printActivations();
     float cost(vector<float> wantedOutput);

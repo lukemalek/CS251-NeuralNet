@@ -8,14 +8,19 @@ int main()
 {
     
 
-    const vector<int> dimentions = {10,5,5,2};
+    const vector<int> dimentions = {10,10,2};
     
-    Network a(dimentions);
+    Network a("after.net");
+    a.evaluate();
     vector<float> v = {1,0};
-    a.toFile("before.net");
-    a+=a.gradient(v);
-    a.toFile("after.net");
-
+    for(int i = 0; i<100; i++)
+    {
+        cout << a.cost(v)<<endl;
+        a-=a.gradient(v);
+        a.evaluate();
+    }
+    
+    a.toFile("after2.net");
     
 
 
