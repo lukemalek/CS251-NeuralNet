@@ -6,15 +6,18 @@
 //      actual copy constructor right now but uhh think about it
 int main()
 {
-    vector<float> input(4);
-    for(unsigned int i = 0; i<4;i++)
+    const vector<int> dimentions = {4,8,2};
+    int firstLayer = dimentions[0];
+    vector<float> input(firstLayer);
+    for(int i = 0; i<firstLayer;i++)
         input[i] = 1.0;
 
 
     srand(time(NULL));
-    const vector<int> dimentions = {4,2,2};
     
-    Network a("before.net");
+    
+    Network a(dimentions);
+    a.toFile("before.net");
     a.setInputLayer(input);
     a.evaluate();
     vector<float> v = {1,0};

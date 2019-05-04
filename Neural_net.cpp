@@ -421,11 +421,11 @@ float Network::dCostdActivation(int l, int n,vector<float> wantO)
         value = (*myNet[l])[n].getActivation() - wantO[n] ;
         return value;
     }
-    if(iterations ==2)
+    else//if(iterations ==2)
     {   
-        for(unsigned int i = 0; i< wantO.size(); i++)
+        int bounds = myNet[l+1]->getSize();
+        for( int i = 0; i< bounds ; i++)
         {
-
             value += dCostdActivation(l + 1, i,wantO) *  (*myNet[l+1])[i].getActivation()* (1- (*myNet[l+1])[i].getActivation()) * (*myNet[l+1])[i].getWeight(n);
         }
         return value;
