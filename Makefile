@@ -1,5 +1,11 @@
 OPTS = -Wall -g -std=c++11
 
+englishLearner: englishLearner.o
+	g++ $(OPTS) -o englishLearner englishLearner.o net_fun.o Neural_net.o -lm
+
+englishLearner.o: englishLearner.cpp Neural_net.o
+	g++ $(OPTS) -c englishLearner.cpp
+
 NetDriver: NetDriver.o
 	g++ $(OPTS) -o NetDriver NetDriver.o net_fun.o Neural_net.o -lm
 
