@@ -42,7 +42,7 @@ vector<float> formToInput(string in,int nodeSpace)
 int main()
 {
     srand(time(NULL));
-    const vector<int> dimentions = {28*90, 40, 2};
+    const vector<int> dimentions = {28*90, 40,40, 2};
     int firstLayer = dimentions[0];
 
     ifstream english("frankenstein.txt");
@@ -62,7 +62,8 @@ int main()
         gibData.push_back(line);
     }
 
-    Network learner("english.net");
+    Network learner("english2hidden.net");
+    /*
     cout << "enter a phrase : ";
     string answer;
     getline(cin, answer);
@@ -73,9 +74,9 @@ int main()
     else
         cout << "I think that is GIBBERISH, you child!" << endl;
     cout <<learner.getOutput(0) << ' '<< learner.getOutput(1) << endl;
-    
+    */
 
-    /*int subsetSize = 10, rate = 3;
+    int subsetSize = 10, rate = 1;
 
     for(int i = 0; i< 1000; i++)
     {
@@ -105,12 +106,12 @@ int main()
             temp += learner.gradient(wanted);
             boop += learner.cost(wanted);
         }
-        temp /= subsetSize * rate;
+        temp /= (subsetSize / (float)rate);
         learner-= temp;
         cout<< boop/subsetSize << endl;
     }
-    learner.toFile("english.net");
-    */
+    learner.toFile("english2hidden.net");
+    
 
 
     
