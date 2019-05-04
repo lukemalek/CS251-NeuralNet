@@ -87,6 +87,7 @@ class Network
     float cost(vector<float> wantedOutput);
     void toFile(string name);
     void setInputLayer(vector<float> v);
+    float getOutput(int i){return (*myNet[layers -1])[i].getActivation();}
 
     //Here it fuckin goes
     Network gradient(vector<float> wantedOutput);

@@ -63,16 +63,28 @@ int main()
     }
 
     Network learner("english.net");
-    int subsetSize = 10, rate = 5;
+    cout << "enter a phrase : ";
+    string answer;
+    getline(cin, answer);
+    learner.setInputLayer(formToInput(answer, firstLayer));
+    learner.evaluate();
+    if(learner.getOutput(0) > learner.getOutput(1))
+        cout << "I think that is english!" << endl;
+    else
+        cout << "I think that is GIBBERISH, you child!" << endl;
+    cout <<learner.getOutput(0) << ' '<< learner.getOutput(1) << endl;
+    
 
-    for(int i = 0; i< 80; i++)
+    /*int subsetSize = 10, rate = 3;
+
+    for(int i = 0; i< 1000; i++)
     {
         float boop = 0;
         Network temp(dimentions, false);
         for(int j = 0; j<subsetSize; j++)
         {
             vector<float> input, wanted(2);
-            if(rnum() > 0.01)
+            if(rnum() > 0.5)
             {
                 int spot = (int)(7720 * rnum());
                 input = formToInput(engData[spot],firstLayer);
@@ -98,7 +110,7 @@ int main()
         cout<< boop/subsetSize << endl;
     }
     learner.toFile("english.net");
-
+    */
 
 
     
