@@ -421,7 +421,7 @@ float Network::dCostdActivation(int l, int n,vector<float> wantO)
         value = (*myNet[l])[n].getActivation() - wantO[n] ;
         return value;
     }
-    else//if(iterations ==2)
+    else
     {   
         int bounds = myNet[l+1]->getSize();
         for( int i = 0; i< bounds ; i++)
