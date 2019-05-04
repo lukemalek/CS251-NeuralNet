@@ -396,7 +396,7 @@ Network Network::gradient(vector<float> wo)
             //for every weight
             for(int k = 0; k< v[i-1]; k++ )
             {
-                weightGradients[k] = dCdA * currentActivation * (1-currentActivation) * (*myNet[i])[k].getActivation();
+                weightGradients[k] = dCdA * currentActivation * (1-currentActivation) * (*myNet[i-1])[k].getActivation();
             }
 
 
@@ -415,14 +415,14 @@ Network Network::gradient(vector<float> wo)
 float Network::dCostdActivation(int l, int n,vector<float> wantO)
 {
     int iterations = layers - l;
-    float value;
+    float value = 0;
     if(iterations == 1)
     {
         value = (*myNet[l])[n].getActivation() - wantO[n] ;
         return value;
     }
-    if(iterations == 2)
-    {
+    if(iterations ==2)
+    {   
         for(unsigned int i = 0; i< wantO.size(); i++)
         {
 
@@ -434,7 +434,21 @@ float Network::dCostdActivation(int l, int n,vector<float> wantO)
     return 0;
 
 }
+void Network::setInputLayer(vector<float> v)
+{
+    if(v.size() == myNet[0]->getSize())
+    {
+        for(unsigned int i = 0; i< v.size(); i++)
+        {
+            (*myNet[0])[i].setActivation(v[i]);
+        }
+    }
+    else
+        cout << "you goofed"<< endl;
+}
 
+
+/*
 void Network::learn()
 {
     vector<float> * trainingData;
@@ -461,4 +475,4 @@ void Network::learn()
 
 
 
-}
+}*/

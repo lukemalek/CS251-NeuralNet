@@ -6,21 +6,27 @@
 //      actual copy constructor right now but uhh think about it
 int main()
 {
-    
+    vector<float> input(4);
+    for(unsigned int i = 0; i<4;i++)
+        input[i] = 1.0;
 
-    const vector<int> dimentions = {10,10,2};
+
+    srand(time(NULL));
+    const vector<int> dimentions = {4,2,2};
     
-    Network a("after.net");
+    Network a("before.net");
+    a.setInputLayer(input);
     a.evaluate();
     vector<float> v = {1,0};
+    cout << "first cost: " << a.cost(v)<<endl;
     for(int i = 0; i<100; i++)
     {
-        cout << a.cost(v)<<endl;
         a-=a.gradient(v);
         a.evaluate();
     }
+    cout << "last cost: " << a.cost(v)<<endl;
     
-    a.toFile("after2.net");
+    a.toFile("after.net");
     
 
 

@@ -86,6 +86,7 @@ class Network
     void printActivations();
     float cost(vector<float> wantedOutput);
     void toFile(string name);
+    void setInputLayer(vector<float> v);
 
     //Here it fuckin goes
     Network gradient(vector<float> wantedOutput);
