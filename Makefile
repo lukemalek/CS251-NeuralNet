@@ -1,5 +1,8 @@
 OPTS = -Wall -g -std=c++11
 
+demo: demo.cpp, Neural_net.o 
+	g++ $(OPTS) -o demo demo.cpp sd_fun.o net_fun.o Neural_net.o -lm
+
 englishLearner: englishLearner.o
 	g++ $(OPTS) -o englishLearner englishLearner.o net_fun.o Neural_net.o -lm
 

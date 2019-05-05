@@ -1,43 +1,4 @@
 #include "Neural_net.h"
-/*
-vector<float> formToInput(string in,int nodeSpace)
-{
-    //when formatting for word AIs, nodes 0-25 are for 'a' thru 'z'
-    // 26 for space, 27 for punctuation, all empty for other.
-    vector<float> result;
-    for(int i = 0;i<nodeSpace; i++)
-    {
-        result.push_back(0);
-    }
-    
-    for(unsigned int i = 0; i< in.size()&& nodeSpace >28; i++)
-    {
-        //is a lowercase letter
-        if(in[i]>= 97 && in[i] <=122)
-        {
-            result[28 * i + in[i] -97] = 1;
-        }
-        //uppecase
-        else if(in[i]>= 65 && in[i] <=90)
-        {
-            result[28 * i + in[i] -65] = 1;
-        }
-        //space
-        else if(in[i] == 32)
-        {
-            result[28 * i + 26] = 1;
-        }
-        //punctuation
-        else if(in[i] == ',' || in[i] == '.' || in[i] == '!' || in[i] == ';' || in[i] == '?')
-        {
-            result[28* i + 27] =1;
-        }
-        nodeSpace -= 28;
-    }
-    return result;
-
-}*/
-
 
 int main()
 {
