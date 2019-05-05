@@ -20,23 +20,37 @@ int main()
     ofstream fakeBook;
     fakeBook.open("gibberish.txt");
     int charsInLine = 0;
-    for(int i = 0; i< 75000; i++)
+    for(int i = 0; i< 400000; i++)
     {
-        string word;
-        int length = 1 + rnum() * 8;
-        charsInLine += length;
-        for(int j = 0; j<length; j++)
+        string symbol;
+        int p = (int)(rnum() * 110);
+        if(p<80)
         {
-            word.push_back(97 + (char)(26 * rnum()));
+            if(p<60)
+            {
+                symbol.push_back('a' + (int)(rnum() * 26));
+            }
+            else
+            {
+                symbol.push_back('A'+ (int)(rnum() * 26));
+            }
         }
-        fakeBook << word;
+        else if (p<105)
+        {
+            symbol.push_back(' ');
+        }
+        else
+        {
+            symbol.push_back('.');
+            symbol.push_back(' ');
+        }
+        charsInLine++;
+        fakeBook << symbol;
         if(charsInLine >60)
         {
             fakeBook<< '\n';
             charsInLine = 0;
         }
-        else
-            fakeBook << ' ';
             
     }
 }

@@ -89,10 +89,13 @@ class Network
     void setInputLayer(vector<float> v);
     float getOutput(int i){return (*myNet[layers -1])[i].getActivation();}
 
-    //Here it fuckin goes
+    
     Network gradient(vector<float> wantedOutput);
     //sudocode for the actual learning process
     void learn();
 };
+
+vector<float> formToInput(string in, int nodeSpace, bool caseSensitive);
+
 
 #endif // _NEURAL_NET_

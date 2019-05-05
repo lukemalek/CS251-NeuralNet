@@ -1,5 +1,5 @@
 #include "Neural_net.h"
-
+/*
 vector<float> formToInput(string in,int nodeSpace)
 {
     //when formatting for word AIs, nodes 0-25 are for 'a' thru 'z'
@@ -36,13 +36,13 @@ vector<float> formToInput(string in,int nodeSpace)
     }
     return result;
 
-}
+}*/
 
 
 int main()
 {
     srand(time(NULL));
-    const vector<int> dimentions = {28*90, 40,40, 2};
+    const vector<int> dimentions = {56*40, 60,20, 2};
     int firstLayer = dimentions[0];
 
     ifstream english("frankenstein.txt");
@@ -55,19 +55,19 @@ int main()
         getline(english,line);
         engData.push_back(line);
     }
-    for(int i = 0; i<5334; i++)
+    for(int i = 0; i<6558; i++)
     {
         string line; 
         getline(gibberish,line);
         gibData.push_back(line);
     }
 
-    Network learner("english2hidden.net");
+    Network learner("englishUpper.net");
     /*
     cout << "enter a phrase : ";
     string answer;
     getline(cin, answer);
-    learner.setInputLayer(formToInput(answer, firstLayer));
+    learner.setInputLayer(formToInput(answer, firstLayer,false));
     learner.evaluate();
     if(learner.getOutput(0) > learner.getOutput(1))
         cout << "I think that is english!" << endl;
@@ -76,9 +76,9 @@ int main()
     cout <<learner.getOutput(0) << ' '<< learner.getOutput(1) << endl;
     */
 
-    int subsetSize = 10, rate = 1;
+    int subsetSize = 10, rate = 10;
 
-    for(int i = 0; i< 1000; i++)
+    for(int i = 0; i< 500; i++)
     {
         float boop = 0;
         Network temp(dimentions, false);
@@ -88,14 +88,14 @@ int main()
             if(rnum() > 0.5)
             {
                 int spot = (int)(7720 * rnum());
-                input = formToInput(engData[spot],firstLayer);
+                input = formToInput(engData[spot],firstLayer, true);
                 wanted[0] =1;
                 wanted[1] = 0;
             }
             else
             {
                 int spot = (int)(5334 * rnum());
-                input = formToInput(gibData[spot],firstLayer);
+                input = formToInput(gibData[spot],firstLayer,true);
                 wanted[0] = 0;
                 wanted[1] = 1;
             }
@@ -110,7 +110,7 @@ int main()
         learner-= temp;
         cout<< boop/subsetSize << endl;
     }
-    learner.toFile("english2hidden.net");
+    learner.toFile("englishUpper.net");
     
 
 
