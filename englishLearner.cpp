@@ -23,19 +23,19 @@ int main()
         gibData.push_back(line);
     }
 
-    Network learner("englishUpper.net");
-    /*
+    Network learner("english.net");
+    
     cout << "enter a phrase : ";
     string answer;
     getline(cin, answer);
-    learner.setInputLayer(formToInput(answer, firstLayer,false));
+    learner.setInputLayer(formToInput(answer, learner.getInputSize(),false));
     learner.evaluate();
     if(learner.getOutput(0) > learner.getOutput(1))
         cout << "I think that is english!" << endl;
     else
-        cout << "I think that is GIBBERISH, you child!" << endl;
+        cout << "I think that is gibberish!" << endl;
     cout <<learner.getOutput(0) << ' '<< learner.getOutput(1) << endl;
-    */
+    /*
 
     int subsetSize = 10, rate = 10;
 
@@ -72,7 +72,7 @@ int main()
         cout<< boop/subsetSize << endl;
     }
     learner.toFile("englishUpper.net");
-    
+    */
 
 
     
