@@ -19,23 +19,6 @@ int main()
 
     if (length_of(yaml) < 50)
     {
-        ifstream english("frankenstein.txt");
-        ifstream gibberish("gibberish.txt");
-
-        vector<string> engData, gibData;
-        for (int i = 0; i < 7720; i++)
-        {
-            string line;
-            getline(english, line);
-            engData.push_back(line);
-        }
-        for (int i = 0; i < 6558; i++)
-        {
-            string line;
-            getline(gibberish, line);
-            gibData.push_back(line);
-        }
-
         Network myBot("english.net");
         AI = &myBot;
         mem[500] = 0;
