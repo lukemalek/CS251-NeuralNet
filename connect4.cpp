@@ -189,11 +189,17 @@ int main()
     int firstLayer = dimensions[0];
 
     //bool isRedsTurn = TRUE;
+    Network tempt(dimensions);
+    tempt.toFile("connect4black.net");
+
+    Network tempt2(dimensions);
+    tempt2.toFile("connect4red.net");
+
 
     Network learner("connect4black.net");
     Network learner2("connect4red.net");
 
-for(int numGames=0; numGames< 500; numGames++){
+for(int numGames=0; numGames< 1; numGames++){
     initializeGameBoard();
     while(!isGameOver){
         makeTurn(blacksMove, learner, learner2);
@@ -257,10 +263,47 @@ for(int numGames=0; numGames< 500; numGames++){
     }
     learner-= temp;
     learner2 -= temp2;
-    cout<<"Cost per move: "<<totalCost/moveNumber<<endl;
+
+        cout << endl;
+    for(int i = 0; i< 7; i++)
+    {
+      cout << "|" ;
+      for(int j = 0; j < 6; j++)
+      {
+        if (isRed[i][j])
+          cout << " X " ;
+        else if (isBlack[i][j])
+          cout << " O ";
+        else cout << "   ";
+      }
+      cout << "|" << endl;
+    }
+    cout<< "|---------------------|\n|                     |"<< endl;
+
+    cout<<"Cost per move: "<<totalCost/moveNumber<<"and number of turns: "<<moveNumber<<endl;
 }
-    learner.toFile("connect4black.net");
-    learner2.toFile("connect4red.net");
+    //learner.toFile("connect4black.net");
+    //learner2.toFile("connect4red.net");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //for(int index =0; index<(42-moves);i++){
 
 //}
