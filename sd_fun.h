@@ -6,7 +6,8 @@
 struct Range {
   int pos, len;
 };
-const int max_length = 10000;
+const int max_length = 100000;
+const int mem_len = 10000;
 
 class irange {
 private:
@@ -58,16 +59,18 @@ extern int indentation_of(const char *response, int pos);
 extern void print_range(const char *s, Range r);
 
 extern void append(char *s, const char *t);
-extern void append(char *s, const char *t, Range r);
-extern void append(char *s, int n);
-extern void append(char *s, long n);
-extern void append(char *s, long long n);
-extern void append(char *s, std::size_t n);
-extern void append(char *s, double d);
+extern void append(char *s, const char *t, Range r, const char *post="");
+extern void append(char *s, int n, const char *post="");
+extern void append(char *s, unsigned int n, const char *post="");
+extern void append(char *s, long n, const char *post="");
+extern void append(char *s, long long n, const char *post="");
+extern void append(char *s, std::size_t n, const char *post="");
+extern void append(char *s, double d, const char *post="");
 
 extern void append(char *s, const char *pre, const char *t, const char *post="");
 extern void append(char *s, const char *pre, const char *t, Range r, const char *post="");
 extern void append(char *s, const char *pre, int n, const char *post="");
+extern void append(char *s, const char *pre, unsigned int n, const char *post="");
 extern void append(char *s, const char *pre, long n, const char *post="");
 extern void append(char *s, const char *pre, long long n, const char *post="");
 extern void append(char *s, const char *pre, std::size_t n, const char *post="");
@@ -82,6 +85,10 @@ extern bool in(const char *s, int start, const char *query);
 extern bool in(const char *s, Range r, const char *query);
 extern bool was_pressed(const char *s, const char *query);
 extern bool was_pressed(const char *s, const char *query, int i);
+extern int touch_pos_x(const char *s);
+extern int touch_pos_y(const char *s);
+extern int touch_start_pos_x(const char *s);
+extern int touch_start_pos_y(const char *s);
 
 extern int count(const char *s, Range r, const char *query);
 extern int count(const char *s, int start, const char *query);
