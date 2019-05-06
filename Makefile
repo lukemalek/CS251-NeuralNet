@@ -1,5 +1,11 @@
 OPTS = -Wall -g -std=c++11
 
+connect4: connect4.o
+	g++ $(OPTS) -o connect4 connect4.o net_fun.o Neural_net.o -lm
+
+connect4.o: connect4.cpp Neural_net.o
+	g++ $(OPTS) -c connect4.cpp
+
 englishLearner: englishLearner.o
 	g++ $(OPTS) -o englishLearner englishLearner.o net_fun.o Neural_net.o -lm
 
