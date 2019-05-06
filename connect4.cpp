@@ -209,10 +209,10 @@ int main()
 
     //bool isRedsTurn = TRUE;
     Network tempt(dimensions, true);
-    tempt.toFile("connect4black.net");
+    //tempt.toFile("connect4black.net");
 
     Network tempt2(dimensions, true);
-    tempt2.toFile("connect4red.net");
+    //tempt2.toFile("connect4red.net");
 
 
 for(int numGames=0; numGames< 100; numGames++){
