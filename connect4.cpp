@@ -204,21 +204,20 @@ void makeTurn(bool& blacksMove, Network& learner, Network& learner2){
 int main()
 {
     srand(time(NULL));
-    const vector<int> dimensions = {7*6*3,20, 7};
+    const vector<int> dimensions = {7*6*3,75,20, 7};
     int firstLayer = dimensions[0];
 
     //bool isRedsTurn = TRUE;
-    //Network tempt(dimensions,false);
-    //tempt.toFile("connect4black.net");
+    Network tempt(dimensions, true);
+    tempt.toFile("connect4black.net");
 
-    //Network tempt2(dimensions,false);
-    //tempt2.toFile("connect4red.net");
+    Network tempt2(dimensions, true);
+    tempt2.toFile("connect4red.net");
 
 
+for(int numGames=0; numGames< 100; numGames++){
     Network learner("connect4black.net");
     Network learner2("connect4red.net");
-
-for(int numGames=0; numGames< 1; numGames++){
     initializeGameBoard();
     while(!isGameOver){
         makeTurn(blacksMove, learner, learner2);
@@ -239,21 +238,21 @@ for(int numGames=0; numGames< 1; numGames++){
             if(blackWon){
                 for(int i = 0; i<7; i++){
                     if(i == choiceStorage[index])
-                    wanted[i]=1;
+                    wanted[i]=.99999;
                     else
-                    wanted[i]=0;
+                    wanted[i]=.00000001;
                 }
             }else{
                 for(int i = 0; i<7; i++){
                     if(i == choiceStorage[index])
-                    wanted[i]=0;
+                    wanted[i]=.00000001;
                     else
-                    wanted[i]=1;
+                    wanted[i]=.99999;
                 }
             }
             learner.setInputLayer(inputStorage[index]);
             learner.evaluate();
-            temp += learner.gradient(wanted);
+            temp += (learner.gradient(wanted)/= index/moveNumber);
             totalCost+= learner.cost(wanted);
 
         }else{
@@ -261,24 +260,31 @@ for(int numGames=0; numGames< 1; numGames++){
             if(!blackWon){
                 for(int i = 0; i<7; i++){
                     if(i == choiceStorage[index])
-                    wanted[i]=1;
+                    wanted[i]=.99999;
                     else
-                    wanted[i]=0;
+                    wanted[i]=.00000001;
                 }
             }else{
                 for(int i = 0; i<7; i++){
                     if(i == choiceStorage[index])
-                    wanted[i]=0;
+                    wanted[i]=.00000001;
                     else
-                    wanted[i]=1;
+                    wanted[i]=.99999;
                 }
             }
-
             learner2.setInputLayer(inputStorage[index]);
             learner2.evaluate();
-            
-            
-            temp2 += learner2.gradient(wanted);
+            /*
+            for(int i = 0; i < 7; i ++){
+            cout<<wanted[i];
+            }
+            cout<<endl;
+                        for(int i = 0; i < 7; i ++){
+            cout<<learner2.getOutput(i)<<" ";
+            }
+            cout<<endl;
+            */
+            temp2 += (learner2.gradient(wanted)*=index/moveNumber);
             totalCost+= learner2.cost(wanted);
 
     }
@@ -304,10 +310,12 @@ for(int numGames=0; numGames< 1; numGames++){
     }
     cout<< "|---------------------|\n|                     |"<< endl;
 
-    cout<<"Cost per move: "<<totalCost/moveNumber<<"and number of turns: "<<moveNumber<<endl;
-}
-    learner.toFile("connect4black.net");
+    //cout<<"Cost per move: "<<totalCost/moveNumber<<"and number of turns: "<<moveNumber<<endl;
+
+        learner.toFile("connect4black.net");
     learner2.toFile("connect4red.net");
+}
+
 
 
 
