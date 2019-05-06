@@ -35,8 +35,10 @@
 
 void makeMove(int c, bool blacksMove){
   int height = 5;
-  while (isEmpty[c][height-1])
+  while (isEmpty[c][height-1]&& height>= 1){
     height--;
+  }
+  //cout<<"height: "<<height<<endl;
   if(height == 5)
     availableSelections[c] = false;
   if(blacksMove)
@@ -61,7 +63,9 @@ void makeMove(int c, bool blacksMove){
   bool possible;
   for(int i = 0; i < 7 ; i++){
     for (int j = 0; j < 6 ; j++){
-      if(tmp[i][j] && isGameOver == false){
+      if(tmp[i][j]==true && isGameOver == false){
+//cout<<"base piece column: "<<i<<" and row: "<<j;
+        //cout<<" have value: "<<tmp[i][j]<<endl;
 	piecesInARow = 1;
 	possible = true;
 	checkIncrement = 1;
@@ -76,6 +80,22 @@ void makeMove(int c, bool blacksMove){
 	}else
 	  possible = false;
 	}
+  if(possible == false){
+  piecesInARow = 1;
+	possible = true;
+	checkIncrement = 1;
+	while(piecesInARow <4 && possible == true){
+	if(i+checkIncrement<7 && j-checkIncrement>=0){
+	  if(tmp[i+checkIncrement][j-checkIncrement]){
+	    piecesInARow++;
+	    checkIncrement++;
+	  }
+	  else
+	    possible = false;
+	}else
+	  possible = false;
+	}
+  }
 	if(possible==false){
 	  piecesInARow = 1;
 	  possible =true;
@@ -83,6 +103,7 @@ void makeMove(int c, bool blacksMove){
 	  while(piecesInARow <4 && possible == true){
 	    if(i+checkIncrement <7){
 	      if(tmp[i+checkIncrement][j]){
+    //cout<<"looking at piece in column "<<i+checkIncrement<<" and row "<<j<<" and about to increase this number of pieces in a row: "<<piecesInARow<<endl;
 		piecesInARow++;
 		checkIncrement++;
 	      }else
@@ -122,7 +143,8 @@ void makeMove(int c, bool blacksMove){
     isGameOver = true;
     isDraw = true;
   }  
-    
+ //cout<<"NEW_CHECK"<<endl;   
+
 }
 
 void makeTurn(bool& blacksMove, Network& learner, Network& learner2){
@@ -165,9 +187,6 @@ void makeTurn(bool& blacksMove, Network& learner, Network& learner2){
 
     }
 
-    for (int i = 0; i<7; i++){
-        outputStorage[moveNumber][i] = outputs[i];
-    }
     choiceStorage[moveNumber] = choice;
 
     makeMove(choice,blacksMove);
@@ -189,11 +208,11 @@ int main()
     int firstLayer = dimensions[0];
 
     //bool isRedsTurn = TRUE;
-    Network tempt(dimensions);
-    tempt.toFile("connect4black.net");
+    //Network tempt(dimensions,false);
+    //tempt.toFile("connect4black.net");
 
-    Network tempt2(dimensions);
-    tempt2.toFile("connect4red.net");
+    //Network tempt2(dimensions,false);
+    //tempt2.toFile("connect4red.net");
 
 
     Network learner("connect4black.net");
@@ -207,9 +226,11 @@ for(int numGames=0; numGames< 1; numGames++){
         //cout<<"turn made, open is now "<<open<<" blacks move is "<<blacksMove<<endl;
     }
 
+    //cout<<"blackWon: "<<blackWon;
+
     vector <float> wanted(7);
-    Network temp(dimensions, false);
-    Network temp2(dimensions, false);
+    Network temp(dimensions);
+    Network temp2(dimensions);
     double totalCost = 0;
 
     for(int index = 0; index < moveNumber; index++){
@@ -259,22 +280,25 @@ for(int numGames=0; numGames< 1; numGames++){
             
             temp2 += learner2.gradient(wanted);
             totalCost+= learner2.cost(wanted);
+
     }
     }
     learner-= temp;
-    learner2 -= temp2;
+    learner2-= temp2;
 
-        cout << endl;
-    for(int i = 0; i< 7; i++)
+    for(int row = 5; row>= 0; row--)
     {
       cout << "|" ;
-      for(int j = 0; j < 6; j++)
+      for(int column = 0; column < 7; column++)
       {
-        if (isRed[i][j])
+        if (isRed[column][row]==true){
           cout << " X " ;
-        else if (isBlack[i][j])
+        }
+        else if (isBlack[column][row]==true){
           cout << " O ";
-        else cout << "   ";
+        }
+        else{ 
+          cout << "   ";}
       }
       cout << "|" << endl;
     }
@@ -282,8 +306,8 @@ for(int numGames=0; numGames< 1; numGames++){
 
     cout<<"Cost per move: "<<totalCost/moveNumber<<"and number of turns: "<<moveNumber<<endl;
 }
-    //learner.toFile("connect4black.net");
-    //learner2.toFile("connect4red.net");
+    learner.toFile("connect4black.net");
+    learner2.toFile("connect4red.net");
 
 
 
