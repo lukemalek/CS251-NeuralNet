@@ -1,81 +1,61 @@
 #include "Neural_net.h"
-/*
-vector<float> formToInput(string in,int nodeSpace)
-{
-    //when formatting for word AIs, nodes 0-25 are for 'a' thru 'z'
-    // 26 for space, 27 for punctuation, all empty for other.
-    vector<float> result;
-    for(int i = 0;i<nodeSpace; i++)
-    {
-        result.push_back(0);
-    }
-    
-    for(unsigned int i = 0; i< in.size()&& nodeSpace >28; i++)
-    {
-        //is a lowercase letter
-        if(in[i]>= 97 && in[i] <=122)
-        {
-            result[28 * i + in[i] -97] = 1;
-        }
-        //uppecase
-        else if(in[i]>= 65 && in[i] <=90)
-        {
-            result[28 * i + in[i] -65] = 1;
-        }
-        //space
-        else if(in[i] == 32)
-        {
-            result[28 * i + 26] = 1;
-        }
-        //punctuation
-        else if(in[i] == ',' || in[i] == '.' || in[i] == '!' || in[i] == ';' || in[i] == '?')
-        {
-            result[28* i + 27] =1;
-        }
-        nodeSpace -= 28;
-    }
-    return result;
-
-}*/
-
 
 int main()
 {
     srand(time(NULL));
-    const vector<int> dimentions = {56*40, 60,20, 2};
+    const vector<int> dimentions = {1200, 60, 20, 2};
     int firstLayer = dimentions[0];
 
     ifstream english("frankenstein.txt");
     ifstream gibberish("gibberish.txt");
 
     vector<string> engData, gibData;
-    for ( int i = 0; i<7720; i++)
+    for (int i = 0; i < 7720; i++)
     {
-        string line; 
-        getline(english,line);
+        string line;
+        getline(english, line);
         engData.push_back(line);
     }
-    for(int i = 0; i<6558; i++)
+    for (int i = 0; i < 6558; i++)
     {
-        string line; 
-        getline(gibberish,line);
+        string line;
+        getline(gibberish, line);
         gibData.push_back(line);
     }
 
-    Network learner("englishUpper.net");
-    /*
-    cout << "enter a phrase : ";
-    string answer;
-    getline(cin, answer);
-    learner.setInputLayer(formToInput(answer, firstLayer,false));
-    learner.evaluate();
-    if(learner.getOutput(0) > learner.getOutput(1))
-        cout << "I think that is english!" << endl;
-    else
-        cout << "I think that is GIBBERISH, you child!" << endl;
-    cout <<learner.getOutput(0) << ' '<< learner.getOutput(1) << endl;
-    */
+    Network learner("english.net");
+    int correct=0,attempted=0;
+    bool keepGo = true;
+    while (keepGo)
+    {
+        
+        cout << "Enter a phrase : ";
+        string answer;
+        getline(cin, answer);
+        
+        if(answer[0] == 0)
+        {
+            keepGo = false;
+            break;
+        }
+        attempted++;
+        learner.setInputLayer(formToInput(answer, learner.getInputSize(), false));
+        learner.evaluate();
+        if (learner.getOutput(0) > learner.getOutput(1))
+            cout << "I think that is english! Was I right? (y/n)" << endl;
+        else
+            cout << "I think that is gibberish! Was I right? (y/n)" << endl;
+        cout << learner.getOutput(0) << ' ' << learner.getOutput(1) << endl;
+        string ans;
+        getline(cin, ans);
+        if(ans[0] == 'y' || ans[0] == 'Y')
+        {
+            correct++;
+        }
+    }
+    cout << "I guessed " << correct << " out of " << attempted << " correctly! (" << ((float)correct)/attempted << ")\n";
 
+    /*
     int subsetSize = 10, rate = 10;
 
     for(int i = 0; i< 500; i++)
@@ -88,14 +68,14 @@ int main()
             if(rnum() > 0.5)
             {
                 int spot = (int)(7720 * rnum());
-                input = formToInput(engData[spot],firstLayer, true);
+                input = formToInput(engData[spot],firstLayer, false);
                 wanted[0] =1;
                 wanted[1] = 0;
             }
             else
             {
                 int spot = (int)(5334 * rnum());
-                input = formToInput(gibData[spot],firstLayer,true);
+                input = formToInput(gibData[spot],firstLayer,false);
                 wanted[0] = 0;
                 wanted[1] = 1;
             }
@@ -111,8 +91,5 @@ int main()
         cout<< boop/subsetSize << endl;
     }
     learner.toFile("englishUpper.net");
-    
-
-
-    
+    */
 }

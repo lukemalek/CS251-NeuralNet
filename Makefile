@@ -5,6 +5,9 @@ connect4: connect4.o
 
 connect4.o: connect4.cpp Neural_net.o
 	g++ $(OPTS) -c connect4.cpp
+	
+demo: demo.cpp Neural_net.o 
+	g++ $(OPTS) -o demo demo.cpp sd_fun.o str_util.o net_fun.o Neural_net.o -lm
 
 englishLearner: englishLearner.o
 	g++ $(OPTS) -o englishLearner englishLearner.o net_fun.o Neural_net.o -lm

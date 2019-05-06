@@ -88,6 +88,7 @@ class Network
     void toFile(string name);
     void setInputLayer(vector<float> v);
     float getOutput(int i){return (*myNet[layers -1])[i].getActivation();}
+    int getInputSize(){return myNet[0]->getSize();}
 
     
     Network gradient(vector<float> wantedOutput);
