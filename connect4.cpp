@@ -65,6 +65,9 @@ void makeMove(int c, bool blacksMove,int& numHorizontalWins, int& numVeritcalWin
   int piecesInARow;
   int checkIncrement;
   bool possible;
+  // bool diagWin=false;
+  //bool vertWin=false; 
+  //bool horizWin=false;
   for(int i = 0; i < 7 ; i++){
     for (int j = 0; j < 6 ; j++){
       if(tmp[i][j]==true && isGameOver == false){
@@ -84,6 +87,9 @@ void makeMove(int c, bool blacksMove,int& numHorizontalWins, int& numVeritcalWin
 	}else
 	  possible = false;
 	}
+	if(piecesInARow>=4){
+	  numDiagonalWins++;
+	}
   if(possible == false){
   piecesInARow = 1;
 	possible = true;
@@ -98,6 +104,9 @@ void makeMove(int c, bool blacksMove,int& numHorizontalWins, int& numVeritcalWin
 	    possible = false;
 	}else
 	  possible = false;
+	}
+	if(piecesInARow>=4){
+	  numDiagonalWins++;
 	}
   }
 	if(possible==false){
@@ -115,6 +124,9 @@ void makeMove(int c, bool blacksMove,int& numHorizontalWins, int& numVeritcalWin
 	    }else
 	      possible =false;
 	  }
+	  if(piecesInARow>=4){
+	    numHorizontalWins++;
+}
 	}
 	if(possible ==false){
 	  piecesInARow =1;
@@ -129,6 +141,9 @@ void makeMove(int c, bool blacksMove,int& numHorizontalWins, int& numVeritcalWin
 		possible = false;
 	    }else
 	      possible = false;
+	  }
+	  if(piecesInARow>=4){
+	    numVerticalWins++;
 	  }
 	}
 	if(piecesInARow>=4){
@@ -179,14 +194,20 @@ void makeTurn(bool& blacksMove, Network& learner, Network& learner2,int& numHori
             outputs [i] = learner2.getOutput(i);
         }
     }
+    //bool random = false;
     int choice = -1;
     double value = -1000;
     for(int i = 0; i<7; i++){
         if(availableSelections[i]){
-            if(outputs[i]>= value){
+            if(outputs[i]> value){
                 choice = i;
                 value = outputs[i];
-            }
+            }else if(outputs[i] == value){
+	      if (rnum()>0.5){
+		choice = i;
+		value = outputs[i];
+	      }
+	    }
         }
 
     }
@@ -213,18 +234,18 @@ int main()
   numRedWins = 0; 
   numBlackWins=0;
     srand(time(NULL));
-    const vector<int> dimensions = {7*6*3,75,20, 7};
-    int firstLayer = dimensions[0];
+    const vector<int> dimensions = {7*6*3,100,50,30, 7};
+    //int firstLayer = dimensions[0];
 
     //bool isRedsTurn = TRUE;
-    Network tempt(dimensions, true);
+    //Network tempt(dimensions, false);
     //tempt.toFile("connect4black.net");
 
-    Network tempt2(dimensions, true);
+    //Network tempt2(dimensions, false);
     //tempt2.toFile("connect4red.net");
 
-float nummGames = 1000;
-for(int numGames=0; numGames< 1000; numGames++){
+float nummGames = 200;
+for(int numGames=0; numGames< 200; numGames++){
     Network learner("connect4black.net");
     Network learner2("connect4red.net");
     initializeGameBoard();
@@ -251,21 +272,21 @@ for(int numGames=0; numGames< 1000; numGames++){
             if(blackWon){
                 for(int i = 0; i<7; i++){
                     if(i == choiceStorage[index])
-                    wanted[i]=.99999;
+                    wanted[i]=1;
                     else
-                    wanted[i]=.00000001;
+                    wanted[i]=0;
                 }
             }else{
                 for(int i = 0; i<7; i++){
                     if(i == choiceStorage[index])
-                    wanted[i]=.00000001;
+                    wanted[i]=0;
                     else
-                    wanted[i]=.99999;
+                    wanted[i]=1;
                 }
             }
             learner.setInputLayer(inputStorage[index]);
             learner.evaluate();
-            temp += (learner.gradient(wanted)/= index/moveNumber);
+            temp += (learner.gradient(wanted));
             totalCost+= learner.cost(wanted);
 
         }else{
@@ -273,16 +294,16 @@ for(int numGames=0; numGames< 1000; numGames++){
             if(!blackWon){
                 for(int i = 0; i<7; i++){
                     if(i == choiceStorage[index])
-                    wanted[i]=.99999;
+                    wanted[i]=1;
                     else
-                    wanted[i]=.00000001;
+                    wanted[i]=0;
                 }
             }else{
                 for(int i = 0; i<7; i++){
                     if(i == choiceStorage[index])
-                    wanted[i]=.00000001;
+                    wanted[i]=0;
                     else
-                    wanted[i]=.99999;
+                    wanted[i]=1;
                 }
             }
             learner2.setInputLayer(inputStorage[index]);
@@ -297,7 +318,7 @@ for(int numGames=0; numGames< 1000; numGames++){
             }
             cout<<endl;
             */
-            temp2 += (learner2.gradient(wanted)*=index/moveNumber);
+            temp2 += (learner2.gradient(wanted));
             totalCost+= learner2.cost(wanted);
 
     }
@@ -331,7 +352,7 @@ for(int numGames=0; numGames< 1000; numGames++){
 
 
 cout<<"black win percentage: "<<(numBlackWins/nummGames)<<" and red: "<<(numRedWins/nummGames)<<endl;
-
+ cout<<"diagonal: "<<numDiagonalWins<<" horizontal: "<<numHorizontalWins<<" vertical: "<<numVerticalWins<<endl;
 
 
 
