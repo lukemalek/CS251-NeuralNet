@@ -4,7 +4,11 @@
     bool isRed[7][6];
     bool isBlack[7][6];
   bool availableSelections[7];
-  //bool[42][]
+ int numDiagonalWins;
+  int numVerticalWins;
+  int numHorizontalWins;
+  float numBlackWins;
+  float numRedWins;
     int open;
     bool isGameOver;
     bool blacksMove;
@@ -33,7 +37,7 @@
     }
 
 
-void makeMove(int c, bool blacksMove){
+void makeMove(int c, bool blacksMove,int& numHorizontalWins, int& numVeritcalWins, int & numDiagonalWins){
   int height = 5;
   while (isEmpty[c][height-1]&& height>= 1){
     height--;
@@ -147,7 +151,7 @@ void makeMove(int c, bool blacksMove){
 
 }
 
-void makeTurn(bool& blacksMove, Network& learner, Network& learner2){
+void makeTurn(bool& blacksMove, Network& learner, Network& learner2,int& numHorizontalWins, int& numVeritcalWins, int & numDiagonalWins){
         vector<float> inputs;
         float outputs [7];
         for(int i = 0; i < 7; i++){
@@ -189,7 +193,7 @@ void makeTurn(bool& blacksMove, Network& learner, Network& learner2){
 
     choiceStorage[moveNumber] = choice;
 
-    makeMove(choice,blacksMove);
+    makeMove(choice,blacksMove, numHorizontalWins, numVerticalWins, numDiagonalWins);
     //cout<<"got here";
         if(blacksMove == true){
         blacksMove=false;
@@ -203,6 +207,11 @@ void makeTurn(bool& blacksMove, Network& learner, Network& learner2){
 
 int main()
 {
+    numDiagonalWins=0;
+  numVerticalWins=0;
+  numHorizontalWins=0;
+  numRedWins = 0; 
+  numBlackWins=0;
     srand(time(NULL));
     const vector<int> dimensions = {7*6*3,75,20, 7};
     int firstLayer = dimensions[0];
@@ -214,17 +223,21 @@ int main()
     Network tempt2(dimensions, true);
     //tempt2.toFile("connect4red.net");
 
-
-for(int numGames=0; numGames< 100; numGames++){
+float nummGames = 1000;
+for(int numGames=0; numGames< 1000; numGames++){
     Network learner("connect4black.net");
     Network learner2("connect4red.net");
     initializeGameBoard();
     while(!isGameOver){
-        makeTurn(blacksMove, learner, learner2);
+        makeTurn(blacksMove, learner, learner2,numHorizontalWins,numVerticalWins,numDiagonalWins);
         moveNumber++;
         //cout<<"turn made, open is now "<<open<<" blacks move is "<<blacksMove<<endl;
     }
-
+  if(blackWon){
+    numBlackWins++;
+  } else if (blackWon == false){
+    numRedWins++;
+  }
     //cout<<"blackWon: "<<blackWon;
 
     vector <float> wanted(7);
@@ -256,7 +269,7 @@ for(int numGames=0; numGames< 100; numGames++){
             totalCost+= learner.cost(wanted);
 
         }else{
-            //stuff for the learner 2 network which handles red moves
+            //stuff for the learner 2 network which handles red moves, also counts filling up the board as a dub for red which i kinda like
             if(!blackWon){
                 for(int i = 0; i<7; i++){
                     if(i == choiceStorage[index])
@@ -317,7 +330,7 @@ for(int numGames=0; numGames< 100; numGames++){
 }
 
 
-
+cout<<"black win percentage: "<<(numBlackWins/nummGames)<<" and red: "<<(numRedWins/nummGames)<<endl;
 
 
 
