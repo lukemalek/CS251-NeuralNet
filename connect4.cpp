@@ -234,7 +234,7 @@ int main()
   numRedWins = 0; 
   numBlackWins=0;
     srand(time(NULL));
-    const vector<int> dimensions = {7*6*3,100,50,30, 7};
+    const vector<int> dimensions = {7*6*3,20, 7};
     //int firstLayer = dimensions[0];
 
     //bool isRedsTurn = TRUE;
@@ -244,8 +244,8 @@ int main()
     //Network tempt2(dimensions, false);
     //tempt2.toFile("connect4red.net");
 
-float nummGames = 200;
-for(int numGames=0; numGames< 200; numGames++){
+float nummGames = 1000;
+for(int numGames=0; numGames< 1000; numGames++){
     Network learner("connect4black.net");
     Network learner2("connect4red.net");
     initializeGameBoard();
