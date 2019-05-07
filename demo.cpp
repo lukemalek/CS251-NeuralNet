@@ -27,10 +27,11 @@ int main()
         write_at(mem, 150, "I think that is english.");
         write_at(mem, 180, "I think that is gibberish.");
     }
-    yaml[0] = 0;
+    
 
     int guess = 0;
     Range t_range = find_value(yaml, "content:");
+    yaml[0] = 0;
     if (t_range.len > 0)
     {
         /*
@@ -47,9 +48,9 @@ int main()
             guess = 2;
         }
         */
-        write_at(mem, 0, "butt");
+        write_at(mem, 0, "you entered a wordddd");
     }
-    write_at(mem, 50, t_range.pos);
+    write_at(mem, 50, (long)AI);
     append(yaml, R"(
     Text_top:
       style:

@@ -191,8 +191,10 @@ Layer::~Layer()
     {
         myNodes[i].~Node();
     }
-    if (myNodes)
-        delete[] myNodes;
+    
+    //if (myNodes)
+    //    delete[] myNodes;
+    
 }
 void Layer::printActivations()
 {
@@ -250,7 +252,17 @@ Network::Network(string name)
         }
     }
 }
+/*Network::~Network()
+{
+    
+    for(unsigned int i = 0; i< layers; i++)
+    {
+        if(myNet[i])myNet[i]->~Layer();
+    }
+    
+    if(myNet) delete myNet;
 
+}*/
 void Network::evaluate()
 {
     for (unsigned int i = 1; i < layers; i++)
@@ -517,6 +529,15 @@ vector<float> formToInput(string in, int nodeSpace, bool caseSensitive)
         }
         
         nodeSpace -= 30;
+    }
+    return result;
+}
+vector<int> Network::getLayerSizes()
+{
+    vector<int> result;
+    for(unsigned int i = 0; i<layers; i++)
+    {
+        result.push_back(myNet[i]->getSize());
     }
     return result;
 }

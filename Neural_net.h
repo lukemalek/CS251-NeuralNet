@@ -65,7 +65,7 @@ class Network
     unsigned int layers;
     // array of layers, the entire network
     // 0th layer is input layer
-    Layer ** myNet;
+    Layer ** myNet; 
 
     public:
     //literally the most basic network I can make.
@@ -75,6 +75,7 @@ class Network
     // sizes of layers go with values in the vector
     Network(vector<int> layerSizes, bool randomWeights = true);
     Network(string name);
+    //~Network();
 
     Network& operator+=(const Network &a);
     Network& operator-=(const Network &a);
@@ -89,7 +90,7 @@ class Network
     void setInputLayer(vector<float> v);
     float getOutput(int i){return (*myNet[layers -1])[i].getActivation();}
     int getInputSize(){return myNet[0]->getSize();}
-
+    vector<int> getLayerSizes();
     
     Network gradient(vector<float> wantedOutput);
     //sudocode for the actual learning process

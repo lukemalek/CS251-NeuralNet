@@ -1,5 +1,20 @@
 OPTS = -Wall -g -std=c++11
 
+rspbotvbot: rspbotvbot.o
+	g++ $(OPTS) -o rspbotvbot rspbotvbot.o net_fun.o Neural_net.o  RPSBot.o -lm
+
+rspbotvbot.o: rspbotvbot.cpp RPSBot.o
+	g++ $(OPTS) -c rspbotvbot.cpp
+
+RPSDriver: RPSDriver.o
+	g++ $(OPTS) -o RPSDriver RPSDriver.o net_fun.o Neural_net.o  RPSBot.o -lm
+
+RPSDriver.o: RPSDriver.cpp RPSBot.o
+	g++ $(OPTS) -c RPSDriver.cpp
+
+RPSBot.o: Neural_net.o RPSBot.cpp RPSBot.h
+	g++ $(OPTS) -c RPSBot.cpp
+
 connect4: connect4.o
 	g++ $(OPTS) -o connect4 connect4.o net_fun.o Neural_net.o -lm
 
