@@ -234,7 +234,9 @@ int main()
   numRedWins = 0; 
   numBlackWins=0;
     srand(time(NULL));
-    const vector<int> dimensions = {7*6*3,20, 7};
+    const vector<int> dimensions = {7*6*3,75,40, 7};
+    bool playHuman = false;
+    bool compGoesFirst = false;
     //int firstLayer = dimensions[0];
 
     //bool isRedsTurn = TRUE;
@@ -243,7 +245,83 @@ int main()
 
     //Network tempt2(dimensions, false);
     //tempt2.toFile("connect4red.net");
+if(playHuman){
+    Network learner("connect4black.net");
+    Network learner2("connect4red.net");
+    initializeGameBoard();
+  if(compGoesFirst){
+    while(!isGameOver){
+        makeTurn(blacksMove, learner, learner2,numHorizontalWins,numVerticalWins,numDiagonalWins);
+        moveNumber++;
+          int playerselection;
+          cout<<"enter column number: ";
+          cin>>playerselection;
+          makeMove(playerselection,blacksMove, numHorizontalWins, numVerticalWins, numDiagonalWins);
+          moveNumber++;
+                  if(blacksMove == true){
+        blacksMove=false;
+    }
+        else
+        {
+            blacksMove = true;
+        } 
+              for(int row = 5; row>= 0; row--)
+    {
+      cout << "|" ;
+      for(int column = 0; column < 7; column++)
+      {
+        if (isRed[column][row]==true){
+          cout << " X " ;
+        }
+        else if (isBlack[column][row]==true){
+          cout << " O ";
+        }
+        else{ 
+          cout << "   ";}
+      }
+      cout << "|" << endl;
+    }
+    cout<< "|---------------------|\n|                     |"<< endl;
+    }
+  }else{
+        while(!isGameOver){
+          int playerselection;
+          cout<<"enter column number: ";
+          cin>>playerselection;
+          makeMove(playerselection,blacksMove, numHorizontalWins, numVerticalWins, numDiagonalWins);
+          moveNumber++;
+                  if(blacksMove == true){
+        blacksMove=false;
+    }
+        else
+        {
+            blacksMove = true;
+        } 
+        makeTurn(blacksMove, learner, learner2,numHorizontalWins,numVerticalWins,numDiagonalWins);
+        moveNumber++;
+        //cout<<"turn made, open is now "<<open<<" blacks move is "<<blacksMove<<endl;
+            for(int row = 5; row>= 0; row--)
+    {
+      cout << "|" ;
+      for(int column = 0; column < 7; column++)
+      {
+        if (isRed[column][row]==true){
+          cout << " X " ;
+        }
+        else if (isBlack[column][row]==true){
+          cout << " O ";
+        }
+        else{ 
+          cout << "   ";}
+      }
+      cout << "|" << endl;
+    }
+    cout<< "|---------------------|\n|                     |"<< endl;
+    }
+  }
+}
 
+else{
 float nummGames = 1000;
 for(int numGames=0; numGames< 1000; numGames++){
     Network learner("connect4black.net");
@@ -356,7 +434,7 @@ cout<<"black win percentage: "<<(numBlackWins/nummGames)<<" and red: "<<(numRedW
 
 
 
-
+}
 
 
 
