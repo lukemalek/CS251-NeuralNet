@@ -75,7 +75,7 @@ class Network
     // sizes of layers go with values in the vector
     Network(vector<int> layerSizes, bool randomWeights = true);
     Network(string name);
-    //~Network();
+    ~Network();
 
     Network& operator+=(const Network &a);
     Network& operator-=(const Network &a);

@@ -252,7 +252,7 @@ Network::Network(string name)
         }
     }
 }
-/*Network::~Network()
+Network::~Network()
 {
     
     for(unsigned int i = 0; i< layers; i++)
@@ -262,7 +262,7 @@ Network::Network(string name)
     
     if(myNet) delete myNet;
 
-}*/
+}
 void Network::evaluate()
 {
     for (unsigned int i = 1; i < layers; i++)

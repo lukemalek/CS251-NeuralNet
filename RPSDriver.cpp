@@ -8,10 +8,8 @@ int main()
     
     const vector<int> dimentions = {150, 60,40, 3};
 
-    RPSBot bot1("vsbot2.net");
-    //RPSBot bot2("bot1.net");
+    RPSBot bot1("vsbot1.net");
     bot1.setInputLayer();
-    //bot2.setInputLayer();
     float rate = 3;
     //bool go = true;
     cout<< endl;

@@ -3,16 +3,16 @@
 int main()
 {
     int score1 = 0, score2 = 0, games = 0;
-    const vector<int> dimentions1 = {150, 60, 40, 3};
-    const vector<int> dimentions2 = {50, 20, 3};
+    const vector<int> dimentions1 = {150, 40, 40, 3};
+    const vector<int> dimentions2 = {150, 150, 3};
 
-    //RPSBot bot1(dimentions1, true);
-    //RPSBot bot2(dimentions2, true);
+    //RPSBot bot1(dimentions1, false);
+    //RPSBot bot2(dimentions2, false);
     RPSBot bot1("vsbot1.net");
     RPSBot bot2("vsbot2.net");
     bot1.setInputLayer();
     bot2.setInputLayer();
-    float rate = 1;
+    float rate = 0.2;
     //bool go = true;
     cout << endl;
     for (; games < 1000; games++)
