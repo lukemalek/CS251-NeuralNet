@@ -3,11 +3,9 @@
 //TODO: 
 int main()
 {
-    const vector<int> dimentions = {1000, 20, 2};
+    const vector<int> dimentions = {2, 4, 2};
     int firstLayer = dimentions[0];
-    vector<float> input(firstLayer);
-    for(int i = 0; i<firstLayer;i++)
-        input[i] = 0.5;
+    vector<float> input(firstLayer,0.5);
 
 
     srand(time(NULL));
@@ -16,16 +14,19 @@ int main()
     Network a(dimentions,false);
     a.toFile("before.net");
     a.setInputLayer(input);
-    a.evaluate();
+
     vector<float> v = {1,1};
     cout << "first cost: " << a.cost(v)<<endl;
-    for(int i = 0; i<100; i++)
+    for(int i = 0; i<100000; i++)
     {
-        a-=a.gradient(v);
         a.evaluate();
+        cout << a.cost(v)<<endl;
+        a-=a.gradient(v);
+        
     }
-    cout << "last cost: " << a.cost(v)<<endl;
-    
+    cout << "\nlast cost: " << a.cost(v)<<endl;
+    int b;
+    cin >>b;
     a.toFile("after.net");
     
 
