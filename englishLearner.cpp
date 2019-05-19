@@ -3,7 +3,7 @@ using namespace std;
 int main()
 {
     srand(time(NULL));
-    const vector<int> dimentions = {30*200, 100, 40, 2};
+    const vector<int> dimentions = {30*100, 20, 2};
     int firstLayer = dimentions[0];
 
     ifstream frank("frankenstein.txt");
@@ -74,9 +74,10 @@ int main()
 
 
 
-    /*
-    Network learner(dimentions,false);
+    //Network learner(dimentions, false);
+    Network learner("HomerVShelly.net");
     int correct=0,attempted=0;
+    /*
     bool keepGo = true;
     while (keepGo)
     {
@@ -109,27 +110,28 @@ int main()
 
     */
 
-    /*
-    int subsetSize = 10, rate = 10;
+    
+    int subsetSize = 100;
+    float rate = 1;
 
-    for(int i = 0; i< 500; i++)
+    for(int i = 0; i< 50; i++)
     {
         float boop = 0;
-        Network temp(dimentions, false);
+        Network temp(learner.getLayerSizes(), false);
         for(int j = 0; j<subsetSize; j++)
         {
             vector<float> input, wanted(2);
             if(rnum() > 0.5)
             {
-                int spot = (int)(7720 * rnum());
-                input = formToInput(engData[spot],firstLayer, false);
+                int spot = (int)(frankData.size() * rnum());
+                input = formToInput(frankData[spot],firstLayer, false);
                 wanted[0] =1;
                 wanted[1] = 0;
             }
             else
             {
-                int spot = (int)(5334 * rnum());
-                input = formToInput(gibData[spot],firstLayer,false);
+                int spot = (int)(odyData.size() * rnum());
+                input = formToInput(odyData[spot],firstLayer,false);
                 wanted[0] = 0;
                 wanted[1] = 1;
             }
@@ -140,10 +142,10 @@ int main()
             temp += learner.gradient(wanted);
             boop += learner.cost(wanted);
         }
-        temp /= (subsetSize / (float)rate);
+        temp /= (subsetSize / rate);
         learner-= temp;
         cout<< boop/subsetSize << endl;
     }
-    learner.toFile("englishUpper.net");
-    */
+    learner.toFile("HomerVShelly.net");
+    
 }
