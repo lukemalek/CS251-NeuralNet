@@ -1,29 +1,81 @@
 #include "Neural_net.h"
-
+using namespace std;
 int main()
 {
     srand(time(NULL));
-    const vector<int> dimentions = {1200, 60, 20, 2};
+    const vector<int> dimentions = {30*200, 100, 40, 2};
     int firstLayer = dimentions[0];
 
-    ifstream english("frankenstein.txt");
-    ifstream gibberish("gibberish.txt");
+    ifstream frank("frankenstein.txt");
+    ifstream ody("odyssey.txt");
 
-    vector<string> engData, gibData;
-    for (int i = 0; i < 7720; i++)
+    //this chunk will read both books into separate giant strings.
+    vector<string> frankData, odyData;
+    string frankstring,odystring,line,s;
+    s= " ";
+    while(frank)
     {
-        string line;
-        getline(english, line);
-        engData.push_back(line);
+        getline(frank,line);
+        frankstring += s;
+        frankstring += line;
+        
     }
-    for (int i = 0; i < 6558; i++)
+    while(ody)
     {
-        string line;
-        getline(gibberish, line);
-        gibData.push_back(line);
+        getline(ody,line);
+        odystring += s;
+        odystring += line;
     }
 
-    Network learner("english.net");
+
+    int franksize = frankstring.size(), odysize = odystring.size();
+    for(int i = 0; i<franksize;i++)
+    {
+        string a = {};
+        while (frankstring[i] < 65 || frankstring[i] > 90)
+        {
+            if(i<franksize)i++;
+            else break;
+        }
+        if(i==franksize)break;
+        while (frankstring[i] != '.' && frankstring[i] != '!' && frankstring[i] != '?')
+        {
+            a.push_back(frankstring[i]);
+            if(i<franksize)i++;
+            else break;
+        }
+        a.push_back(frankstring[i]);
+        frankData.push_back(a);
+    }
+
+    for(int i = 0; i<odysize;i++)
+    {
+        string a = {};
+        while (odystring[i] < 65 || odystring[i] > 90)
+        {
+            if(i<odysize)i++;
+            else break;
+        }
+        if(i==odysize)break;
+        while (odystring[i] != '.' && odystring[i] != '!' && odystring[i] != '?')
+        {
+            a.push_back(odystring[i]);
+            if(i<odysize)i++;
+            else break;
+        }
+        a.push_back(odystring[i]);
+        odyData.push_back(a);
+    }
+
+    frank.close();
+    ody.close();
+
+    cout << endl<< odyData[1328] << endl;
+
+
+
+    /*
+    Network learner(dimentions,false);
     int correct=0,attempted=0;
     bool keepGo = true;
     while (keepGo)
@@ -54,6 +106,8 @@ int main()
         }
     }
     cout << "I guessed " << correct << " out of " << attempted << " correctly! (" << ((float)correct)/attempted << ")\n";
+
+    */
 
     /*
     int subsetSize = 10, rate = 10;
