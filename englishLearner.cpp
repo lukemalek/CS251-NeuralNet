@@ -3,7 +3,7 @@ using namespace std;
 int main()
 {
     srand(time(NULL));
-    const vector<int> dimentions = {30*100, 20, 2};
+    const vector<int> dimentions = {30*100,20, 2};
     int firstLayer = dimentions[0];
 
     ifstream frank("frankenstein.txt");
@@ -77,12 +77,12 @@ int main()
 
 
     //Network learner(dimentions, false);
-    Network learner("HomerVShelly.net");
+    Network learner("HomerVShelly2.net");
     int correct=0;
 
     
     int subsetSize = 1000;
-    float rate = 0.2;
+    float rate = 10;
 
     for(int i = 0; i< 10; i++)
     {
@@ -111,13 +111,13 @@ int main()
             if((learner.getOutput(0)>learner.getOutput(1) && wanted[0] == 1)|| (learner.getOutput(0)<=learner.getOutput(1) && wanted[1] == 1))
                 correct++;
             
-            temp += learner.gradient(wanted);
+            temp += learner.gradient(wanted,0.1);
             boop += learner.cost(wanted);
         }
         temp /= (subsetSize / rate);
         learner-= temp;
         cout<< boop/subsetSize << " Number correct out of "<<subsetSize<<": "<< correct<< endl;
     }
-    learner.toFile("HomerVShelly.net");
+    learner.toFile("HomerVShelly2.net");
     
 }

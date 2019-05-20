@@ -16,14 +16,16 @@ Node::Node(float act)
     ws = 0;
     activation = act;
 }
-Node::Node(Layer *layerBefore, bool randomWeights)
+Node::Node(Layer *layerBefore, bool randomWeights, bool allones)
 {
     //initialize random or zero net, not in base layer
 
     if (randomWeights)
         b = 2 * rnum() - 1;
     else
+    {
         b = 0;
+    }
 
     lBefore = layerBefore;
     activation = 0;
@@ -33,8 +35,14 @@ Node::Node(Layer *layerBefore, bool randomWeights)
         for (unsigned int i = 0; i < lBefore->getSize(); i++)
             ws[i] = 2 * rnum() - 1;
     else
-        for (unsigned int i = 0; i < lBefore->getSize(); i++)
-            ws[i] = 0;
+    {
+        if(allones)
+            for (unsigned int i = 0; i < lBefore->getSize(); i++)
+                ws[i] = 1;
+        else
+            for (unsigned int i = 0; i < lBefore->getSize(); i++)
+                ws[i] = 0;
+    }
 }
 Node::Node(istream &is, int weights, Layer *layerBefore)
 {
@@ -174,7 +182,7 @@ void Node::printWeights(ostream &o)
         o << fixed << ws[i] << '\n';
 }
 
-Layer::Layer(unsigned int sz, Layer *layerBefore, bool randomWeights)
+Layer::Layer(unsigned int sz, Layer *layerBefore, bool randomWeights, bool allones)
 {
     size = sz;
     //myNodes = new Node(layerBefore)[sz];
@@ -182,7 +190,7 @@ Layer::Layer(unsigned int sz, Layer *layerBefore, bool randomWeights)
     if (layerBefore)
     {
         for (unsigned int i = 0; i < sz; i++)
-            myNodes[i] = Node(layerBefore, randomWeights);
+            myNodes[i] = Node(layerBefore, randomWeights,allones);
     }
 }
 Layer::~Layer()
@@ -213,14 +221,14 @@ Network::Network(unsigned int ls)
         myNet[i] = new Layer(DEFAULT_NODES_PER_LAYER, myNet[i - 1]);
     }
 }
-Network::Network(vector<int> v, bool randomWeights)
+Network::Network(vector<int> v, bool randomWeights, bool allones)
 {
     layers = v.size();
     myNet = new Layer *[layers];
     myNet[0] = new Layer(v[0]);
     for (unsigned int i = 1; i < layers; i++)
     {
-        myNet[i] = new Layer(v[i], myNet[i - 1], randomWeights);
+        myNet[i] = new Layer(v[i], myNet[i - 1], randomWeights,allones);
     }
 }
 Network::Network(string name)
@@ -371,13 +379,10 @@ Network &Network::operator-=(const Network &a)
     return *this;
 }
 
-Network Network::gradient(vector<float> wo)
+Network Network::gradient(vector<float> wo, float dropout)
 {
     vector<int> v;
-    for (unsigned int i = 0; i < layers; i++)
-    {
-        v.push_back(myNet[i]->getSize());
-    }
+    v = getLayerSizes();
 
     Network grad(v, false);
 
@@ -388,7 +393,11 @@ Network Network::gradient(vector<float> wo)
         //this loop will run for each node
         for (int j = 0; j < v[i]; j++)
         {
+            bool dropped = rnum() < dropout;
+
             float currentActivation = (*myNet[i])[j].getActivation();
+            if(dropped) currentActivation = 0;
+
             Node gradientNode(myNet[i - 1], false);
             float biasGradient, *weightGradients = new float[v[i - 1]];
 

@@ -12,13 +12,16 @@ class GenNetwork: public Network
 
 
     GenNetwork(string name);
-    GenNetwork(vector<int> layerSizes, bool randomWeights = true);
+    GenNetwork(vector<int> layerSizes, bool randomWeights = true, bool allones = false);
 
     void setInputLayer();
     //specific to nets that generate text
     string as_string();
 
+    GenNetwork breedWith(GenNetwork &a, float mutation);
 
 };
+
+
 
 #endif //_GEN_NET_
