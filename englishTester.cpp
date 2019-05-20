@@ -4,11 +4,11 @@ int main()
 {
 
     
-    Network learner("HomerVShelly.net");
+    Network learner("HomerVShelly2.net");
     int correct=0,attempted=0;
     
     bool keepGo = true;
-    cout<< "HomerVShelly net tester! I work best when inputting sentences with a bit of bulk to them (25+ chars)\n";
+    cout<< "HomerVShelly2 net tester! I work best when inputting sentences with a bit of bulk to them (25+ chars)\n";
     while (keepGo)
     {
         
