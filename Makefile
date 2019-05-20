@@ -1,5 +1,14 @@
 OPTS = -Wall -g -std=c++11
 
+GenNetDriver: GenNetDriver.o
+	g++ $(OPTS) -o GenNetDriver GenNetDriver.o net_fun.o Neural_net.o  Gen_net.o -lm
+
+GenNetDriver.o: GenNetDriver.cpp Gen_net.o
+	g++ $(OPTS) -c GenNetDriver.cpp
+
+Gen_net.o: Neural_net.o Gen_net.cpp Gen_net.h
+	g++ $(OPTS) -c Gen_net.cpp
+
 englishTester: englishTester.o
 	g++ $(OPTS) -o englishTester englishTester.o net_fun.o Neural_net.o -lm
 

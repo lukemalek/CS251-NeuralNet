@@ -82,7 +82,7 @@ int main()
 
     
     int subsetSize = 1000;
-    float rate = 1;
+    float rate = 0.2;
 
     for(int i = 0; i< 10; i++)
     {
