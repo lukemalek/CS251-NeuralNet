@@ -1,0 +1,15 @@
+#!/bin/bash
+
+#edit the contents of the loop to the training program you want
+#to have running in the background. As long as the program saves
+#to a file and then loads in the network as the file, it should be
+#perpetually learning. ctrl^C to stop training, as long as one iteration 
+#has gone by.
+
+echo "Press [CTRL+C] to stop at any time"
+
+while true
+do
+    echo "training \"englishLearner\" "
+    ./englishLearner
+done

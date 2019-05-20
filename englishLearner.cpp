@@ -45,7 +45,8 @@ int main()
             else break;
         }
         a.push_back(frankstring[i]);
-        frankData.push_back(a);
+        if(a.size()>20)
+            frankData.push_back(a);
     }
 
     for(int i = 0; i<odysize;i++)
@@ -64,7 +65,8 @@ int main()
             else break;
         }
         a.push_back(odystring[i]);
-        odyData.push_back(a);
+        if(a.size()>20)
+            odyData.push_back(a);
     }
 
     frank.close();
@@ -76,48 +78,17 @@ int main()
 
     //Network learner(dimentions, false);
     Network learner("HomerVShelly.net");
-    int correct=0,attempted=0;
-    /*
-    bool keepGo = true;
-    while (keepGo)
-    {
-        
-        cout << "Enter a phrase : ";
-        string answer;
-        getline(cin, answer);
-        
-        if(answer[0] == 0)
-        {
-            keepGo = false;
-            break;
-        }
-        attempted++;
-        learner.setInputLayer(formToInput(answer, learner.getInputSize(), false));
-        learner.evaluate();
-        if (learner.getOutput(0) > learner.getOutput(1))
-            cout << "I think that is english! Was I right? (y/n)" << endl;
-        else
-            cout << "I think that is gibberish! Was I right? (y/n)" << endl;
-        cout << learner.getOutput(0) << ' ' << learner.getOutput(1) << endl;
-        string ans;
-        getline(cin, ans);
-        if(ans[0] == 'y' || ans[0] == 'Y')
-        {
-            correct++;
-        }
-    }
-    cout << "I guessed " << correct << " out of " << attempted << " correctly! (" << ((float)correct)/attempted << ")\n";
-
-    */
+    int correct=0;
 
     
-    int subsetSize = 100;
+    int subsetSize = 1000;
     float rate = 1;
 
-    for(int i = 0; i< 50; i++)
+    for(int i = 0; i< 10; i++)
     {
         float boop = 0;
         Network temp(learner.getLayerSizes(), false);
+        correct = 0;
         for(int j = 0; j<subsetSize; j++)
         {
             vector<float> input, wanted(2);
@@ -137,14 +108,15 @@ int main()
             }
             learner.setInputLayer(input);
             learner.evaluate();
-            
+            if((learner.getOutput(0)>learner.getOutput(1) && wanted[0] == 1)|| (learner.getOutput(0)<=learner.getOutput(1) && wanted[1] == 1))
+                correct++;
             
             temp += learner.gradient(wanted);
             boop += learner.cost(wanted);
         }
         temp /= (subsetSize / rate);
         learner-= temp;
-        cout<< boop/subsetSize << endl;
+        cout<< boop/subsetSize << " Number correct out of "<<subsetSize<<": "<< correct<< endl;
     }
     learner.toFile("HomerVShelly.net");
     

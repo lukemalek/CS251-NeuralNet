@@ -1,5 +1,11 @@
 OPTS = -Wall -g -std=c++11
 
+englishTester: englishTester.o
+	g++ $(OPTS) -o englishTester englishTester.o net_fun.o Neural_net.o -lm
+
+englishTester.o: englishTester.cpp Neural_net.o
+	g++ $(OPTS) -c englishTester.cpp
+
 rspbotvbot: rspbotvbot.o
 	g++ $(OPTS) -o rspbotvbot rspbotvbot.o net_fun.o Neural_net.o  RPSBot.o -lm
 
