@@ -62,35 +62,44 @@ void GameBoard::initializeGameBoard(){
         //cout << elem << "\n";
     //cout<<"made it here"<<endl;
     //cout<<"made it here"<<endl;
-    Network temp(dimensions);
-    Network temp2(dimensions);
+    Network temp(dimensions, false, false);
+    Network temp2(dimensions, false, false);
     double totalCost = 0;
 
     for(int index = 0; index < moveNumber; index++){
       int selectionsForThisMove = 0;
 for(int i = 0; i<7;i++){
-  if(availableStorage[moveNumber][i])
+  if(availableStorage[moveNumber][i]){
   selectionsForThisMove++;
+  }
 }
         if(index%2 == 0){
             //stuff for the learner 1 network which handles black moves
             if(blackWon){
                 //cout<<"Im black and I won, adding move number "<<index<<" to temp"<<endl;
                 for(int i = 0; i<7; i++){
-                    if(i == choiceStorage[index])
+                    if(i == choiceStorage[index]){
                     wanted[i]=1;
-                    else 
+                    cout<<"a";
+                    }
+                    else{ 
                     wanted[i]=0;
+                    cout<<"b";
+                    }
                 }
             }else{
                                 //cout<<"Im black and I lost, adding move number "<<index<<" to temp"<<endl;
                 for(int i = 0; i<7; i++){
-                    if(i == choiceStorage[index])
+                    if(i == choiceStorage[index]){
                     wanted[i]=0;
-                    else if(availableStorage[moveNumber][i] == false){
+                    //cout<<"c";
+                    }else if(availableStorage[index][i] == false){
                     wanted[i]=0;
+                    //cout<<"d";
                     }
                     else{
+                      //wanted[i] = 1;
+                      //cout<<"e";
                       wanted[i] = (1/(selectionsForThisMove-1));
                     }
                     
@@ -107,20 +116,28 @@ for(int i = 0; i<7;i++){
             if(!blackWon){
                                 //cout<<"Im red and I won, adding move number "<<index<<" to temp2"<<endl;
                 for(int i = 0; i<7; i++){
-                    if(i == choiceStorage[index])
+                    if(i == choiceStorage[index]){
                     wanted[i]=1;
-                    else
+                    //cout<<"f";
+                    }
+                    else{
                     wanted[i]=0;
+                    //cout<<"g";
+                    }
                 }
             }else{
                                 //cout<<"Im red and I lost, adding move number "<<index<<" to temp2"<<endl;
                 for(int i = 0; i<7; i++){
-                    if(i == choiceStorage[index])
+                    if(i == choiceStorage[index]){
                     wanted[i]=0;
-                    else if(availableStorage[moveNumber][i] == false){
+                    cout<<"h";
+                    }else if(availableStorage[index][i] == false){
                     wanted[i]=0;
+                    cout<<"i";
                     }
                     else{
+                      //wanted[i]=1;
+                      cout<<"j";
                       wanted[i] = (1/(selectionsForThisMove-1));
                     }
                 }
@@ -152,15 +169,18 @@ for(int i = 0; i<7;i++){
       //temp2 *=.1;
     }
 */
+float moveFloat = (float) moveNumber;
+cout<<"MOVE Number: "<<moveNumber<<endl;
     if(blackWon){
       //cout<<moveNumber<<endl;
-      temp *= ((2*moveNumber)/43);
-      temp2 *= (2*(43- moveNumber)/43); 
+      temp *= (1*((2*(moveFloat))/43));
+      temp2 *= (5*(2*((43- (moveFloat)))/43)); 
+      cout<<"0 or black won this one"<<endl;
     }
-
     if(blackWon == false){
-      temp *= (2*(43 - moveNumber)/43);
-      temp2 *= (2*(moveNumber)/43);
+      temp *= (5*(2*(43 - (moveFloat))/43));
+      temp2 *= (1*(2*((moveFloat)/43)));
+      cout<<"X or red won this one"<<endl;
     }
       
     *(learnerP)-= temp;
