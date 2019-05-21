@@ -15,14 +15,14 @@ int main()
     int CHARS_IN_FRANKENSTEIN = 422874;
 
     int len = 30;
-    vector<int> dims = {15, 30, len * 33, 30, 2};
+    vector<int> dims = {30, len * 33, 30, 2};
 
-    //GAN frankGAN(dims, 2, true);
-    //frankGAN *= 0.2;
-    GAN frankGAN("frankGAN.net");
+    GAN frankGAN(dims, 1, true);
+    frankGAN *= 0.2;
+    //GAN frankGAN("frankGAN.net");
 
-    int rounds = 5, subset = 5, correct = 0, attempted = 0;
-    float discrate = 0.2, genrate = 10;
+    int rounds = 5, subset = 10, correct = 0, attempted = 0;
+    float discrate = 0.1, genrate = 0.1;
 
     for (int i = 0; i < rounds; i++)
     {
@@ -39,9 +39,9 @@ int main()
             if (frankGAN.getOutput(0) < frankGAN.getOutput(1))
                 correct++;
 
-            discgrad += frankGAN.discriminatorGradient(vector<float>{0,1}, 0.3);
+            discgrad += frankGAN.discriminatorGradient(vector<float>{0,1}, 0.4);
 
-            gengrad += frankGAN.generatorGradient(vector<float>{1,0}, 0.3);
+            gengrad += frankGAN.generatorGradient(vector<float>{1,0});
 
 
             
@@ -53,7 +53,7 @@ int main()
             frankGAN.setContentLayer(extractString(frankstring, rand() % CHARS_IN_FRANKENSTEIN, len));
             frankGAN.evaluate();
 
-            discgrad += frankGAN.discriminatorGradient(vector<float>{1, 0}, 0.3);
+            discgrad += frankGAN.discriminatorGradient(vector<float>{1, 0}, 0.4);
 
             if (frankGAN.getOutput(0) > frankGAN.getOutput(1))
                 correct++;
