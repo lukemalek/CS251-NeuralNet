@@ -5,14 +5,11 @@
 
 class GenNetwork: public Network
 {
-    protected:
-    std::normal_distribution<float> distribution;
-    std::default_random_engine generator;
     public:
 
 
-    GenNetwork(string name);
-    GenNetwork(vector<int> layerSizes, bool randomWeights = true, bool allones = false);
+    GenNetwork(string name): Network(name){}
+    GenNetwork(vector<int> layerSizes, bool randomWeights = true, bool allones = false) : Network(layerSizes, randomWeights, allones){}
 
     void setInputLayer();
     //specific to nets that generate text
@@ -21,7 +18,6 @@ class GenNetwork: public Network
     GenNetwork breedWith(GenNetwork &a, float mutation);
 
 };
-
 
 
 #endif //_GEN_NET_

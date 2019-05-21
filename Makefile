@@ -1,5 +1,11 @@
 OPTS = -Wall -g -std=c++11
 
+frankGAN: frankGAN.o
+	g++ $(OPTS) -o frankGAN frankGAN.o net_fun.o Neural_net.o  Gen_net.o -lm
+
+frankGAN.o: frankGAN.cpp Gen_net.o
+	g++ $(OPTS) -c frankGAN.cpp
+
 GenNetDriver: GenNetDriver.o
 	g++ $(OPTS) -o GenNetDriver GenNetDriver.o net_fun.o Neural_net.o  Gen_net.o -lm
 

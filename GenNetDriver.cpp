@@ -2,20 +2,15 @@
 
 int main()
 {
-    const vector<int> dims {20,80,330};
-    GenNetwork apples(dims, false);
-    GenNetwork oranges(dims, false, true);
-    apples.toFile("apple.net");
-    oranges.toFile("oranges.net");
-    Network a(dims, false);
-    a+= apples.breedWith(oranges, 0);
-    a.toFile("child.net");
 
+    srand(time(NULL));
+    const vector<int> dims{10, 20, 2};
+    GenNetwork mom("mommy.net");
 
-    apples.setInputLayer();
-    apples.evaluate();
-    //cout<< apples.getOutput(7) << endl;
-    cout << apples.as_string() << endl;
-
-
+    for (int i = 0; i < 10; i++)
+    {
+        mom.setInputLayer();
+        mom.evaluate();
+        cout << mom.as_string() << endl;
+    }
 }

@@ -1,20 +1,10 @@
 #include "Gen_net.h"
 
-GenNetwork::GenNetwork(string name) : Network(name)
-{
-    distribution = normal_distribution<float>(1, 1);
-}
-
-GenNetwork::GenNetwork(vector<int> layerSizes, bool randomWeights, bool allones) : Network(layerSizes, randomWeights, allones)
-{
-    distribution = normal_distribution<float>(1, 1);
-}
-
 void GenNetwork::setInputLayer()
 {
     for (unsigned int i = 0; i < myNet[0]->getSize(); i++)
     {
-        (*myNet[0])[i].setActivation(distribution(generator));
+        (*myNet[0])[i].setActivation(rnum() * 2 -1);
     }
 }
 
@@ -100,23 +90,21 @@ GenNetwork GenNetwork::breedWith(GenNetwork &a, float mutationRate)
         //for each node...
         for (int j = 0; j < dim1[i]; j++)
         {
-            Node childNode(child.myNet[i - 1], false);
             float *newWeights = new float[dim1[i - 1]];
 
             for (int k = 0; k < dim1[i - 1]; k++)
             {
-                
                 if (rnum() > 0.5)
                     newWeights[k] = a.myNet[i]->operator[](j).getWeight(k);
                 else
                     newWeights[k] = myNet[i]->operator[](j).getWeight(k);
             }
             if (rnum() > 0.5)
-                childNode.setBias(a.myNet[i]->operator[](j).getBias());
+                child.myNet[i]->operator[](j).setBias(a.myNet[i]->operator[](j).getBias());
             else
-                childNode.setBias(myNet[i]->operator[](j).getBias());
+                child.myNet[i]->operator[](j).setBias(myNet[i]->operator[](j).getBias());
 
-            child.myNet[i]->operator[](j) = childNode;
+            child.myNet[i]->operator[](j).setWeights(newWeights);
             delete[] newWeights;
         }
     }
