@@ -1,5 +1,20 @@
 OPTS = -Wall -g -std=c++11
 
+connect4driver: connect4driver.o
+	g++ $(OPTS) -o connect4driver connect4driver.o net_fun.o Neural_net.o connect4.o -lm
+
+connect4driver.o: connect4driver.cpp connect4.o
+	g++ $(OPTS) -c connect4driver.cpp
+
+connect4.o: net_fun.o connect4.h connect4.cpp
+	g++ $(OPTS) -c connect4.cpp
+
+connect4total: connect4total.o
+	g++ $(OPTS) -o connect4total connect4total.o net_fun.o Neural_net.o -lm
+
+connect4total.o: connect4total.cpp Neural_net.o net_fun.o
+	g++ $(OPTS) -c connect4total.cpp
+
 englishLearner: englishLearner.o
 	g++ $(OPTS) -o englishLearner englishLearner.o net_fun.o Neural_net.o -lm
 
