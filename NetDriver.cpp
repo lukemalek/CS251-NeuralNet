@@ -11,7 +11,7 @@ int main()
     Network a(dimentions, false, true);
     //    Network a("after.net");
 
-    a.setInputLayer(formToInput("ass", firstLayer, false));
+    a.setInputLayer(formToInput("hi", firstLayer, false));
 
     a.evaluate();
     vector<float> v = {1, 0};

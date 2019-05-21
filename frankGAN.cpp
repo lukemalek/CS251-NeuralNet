@@ -1,18 +1,6 @@
 #include "Gen_net.h"
 
-string extractString(string a, int index, int length)
-{
-    string result;
-    if (index + length > (int)a.size())
-    {
-        length = a.size() - index;
-    }
-    for (int i = 0; i < length; i++)
-    {
-        result.push_back(a[index + i]);
-    }
-    return result;
-}
+
 
 int highestIndex(vector<float> a)
 {
@@ -63,7 +51,7 @@ int main()
 
     //determines dimentions of the bots, len is length of sentence to be interpreted.
     int len = 50;
-    vector<int> discSize = {30 * len, 40, 2}, genSize = {20, 30, 33 * len};
+    vector<int> discSize = {33 * len, 40, 2}, genSize = {20, 30, 33 * len};
     int nodespace = discSize[0];
 
     //Network discriminator(discSize, true);
@@ -112,7 +100,7 @@ int main()
                 //quantify the effectiveness as the certainty that the discriminator had in the input being from
                 //the true data set.
                 effectiveness[i] += discriminator.getOutput(0);
-                grad += discriminator.gradient(vector<float>{0, 1}, 0.5);
+                grad += discriminator.gradient(vector<float>{0, 1}, 0.1);
             }
             effectiveness[i] /= tests;
         }
@@ -128,7 +116,7 @@ int main()
             if (discriminator.getOutput(0) > discriminator.getOutput(1))
                 correct++;
 
-            grad += discriminator.gradient(vector<float>{1, 0}, 0.5);
+            grad += discriminator.gradient(vector<float>{1, 0}, 0.1);
         }
 
         //now to make both nets better

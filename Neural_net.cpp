@@ -158,7 +158,7 @@ void Node::setActivation(float a)
 {
     //if being given a set activation, it does not need weights
     //as it must be in the base layer.
-    ws = 0;
+    //ws = 0;
     if (a < 0)
         a = 0;
     else if (a > 1)
@@ -503,41 +503,56 @@ vector<float> formToInput(string in, int nodeSpace, bool caseSensitive)
     }
     //when formatting for word AIs that are NOT CASE SENSITIVE, 
     //nodes 0-25 are for 'a' thru 'z'
-    // 26 for space, 27 for punctuation, 28 for number, and 29 for other.
-    for (unsigned int i = 0; i < in.size() && nodeSpace > 30; i++)
+    // 26 for space, 27 for comma, 28 for period, and 29 for question mark, 30 for exclamation
+    //31 for single quote, 32 for double quote
+    for (unsigned int i = 0; i < in.size() && nodeSpace >= 33; i++)
     {
         //is a lowercase letter
         if (in[i] >= 97 && in[i] <= 122)
         {
-            result[30 * i + in[i] - 97] = 1;
+            result[33 * i + in[i] - 97] = 1;
         }
         //uppecase
         else if (in[i] >= 65 && in[i] <= 90)
         {
-            result[30 * i + in[i] - 65] = 1;
+            result[33 * i + in[i] - 65] = 1;
         }
         //space
         else if (in[i] == 32)
         {
-            result[30 * i + 26] = 1;
+            result[33 * i + 26] = 1;
         }
-        //punctuation
-        else if (in[i] == ',' || in[i] == '.' || in[i] == '!' || in[i] == ';' || in[i] == '?')
+        //comma
+        else if (in[i] == ',' )
         {
-            result[30 * i + 27] = 1;
+            result[33 * i + 27] = 1;
         }
-        //nomber
-        else if(in[i] >= '0' && in[i] <= '9')
+        //period
+        else if(in[i] == '.')
         {
-            result[30 * i + 28] = 1;
+            result[33 * i + 28] = 1;
         }
-        //other
-        else
+        //question mark
+        else if(in[i] == '?')
         {
-            result[30 * i + 29] = 1;
+            result[33 * i + 29] = 1;
+        }//exclame
+        else if (in[i] == '!' )
+        {
+            result[33 * i + 30] = 1;
+        }
+        //single quote
+        else if(in[i] == '\'')
+        {
+            result[33 * i + 31] = 1;
+        }
+        //doubel quote
+        else if(in[i] == '"')
+        {
+            result[33 * i + 32] = 1;
         }
         
-        nodeSpace -= 30;
+        nodeSpace -= 33;
     }
     return result;
 }
@@ -547,6 +562,19 @@ vector<int> Network::getLayerSizes()
     for(unsigned int i = 0; i<layers; i++)
     {
         result.push_back(myNet[i]->getSize());
+    }
+    return result;
+}
+string extractString(string a, int index, int length)
+{
+    string result;
+    if (index + length > (int)a.size())
+    {
+        length = a.size() - index;
+    }
+    for (int i = 0; i < length; i++)
+    {
+        result.push_back(a[index + i]);
     }
     return result;
 }

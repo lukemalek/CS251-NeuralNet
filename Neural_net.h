@@ -66,11 +66,12 @@ class Network
     const int DEFAULT_NODES_PER_LAYER = 15;
     // count of layers in basic neural net
     unsigned int layers;
+    public:
     // array of layers, the entire network
     // 0th layer is input layer
     Layer ** myNet; 
 
-    public:
+    
     //literally the most basic network I can make.
     Network(unsigned int ls);
 
@@ -101,6 +102,8 @@ class Network
 };
 
 vector<float> formToInput(string in, int nodeSpace, bool caseSensitive);
+string extractString(string a, int index, int length);
+
 
 
 #endif // _NEURAL_NET_
