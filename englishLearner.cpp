@@ -1,118 +1,123 @@
 #include "Neural_net.h"
-/*
-vector<float> formToInput(string in,int nodeSpace)
-{
-    //when formatting for word AIs, nodes 0-25 are for 'a' thru 'z'
-    // 26 for space, 27 for punctuation, all empty for other.
-    vector<float> result;
-    for(int i = 0;i<nodeSpace; i++)
-    {
-        result.push_back(0);
-    }
-    
-    for(unsigned int i = 0; i< in.size()&& nodeSpace >28; i++)
-    {
-        //is a lowercase letter
-        if(in[i]>= 97 && in[i] <=122)
-        {
-            result[28 * i + in[i] -97] = 1;
-        }
-        //uppecase
-        else if(in[i]>= 65 && in[i] <=90)
-        {
-            result[28 * i + in[i] -65] = 1;
-        }
-        //space
-        else if(in[i] == 32)
-        {
-            result[28 * i + 26] = 1;
-        }
-        //punctuation
-        else if(in[i] == ',' || in[i] == '.' || in[i] == '!' || in[i] == ';' || in[i] == '?')
-        {
-            result[28* i + 27] =1;
-        }
-        nodeSpace -= 28;
-    }
-    return result;
-
-}*/
-
-
+using namespace std;
 int main()
 {
     srand(time(NULL));
-    const vector<int> dimentions = {56*40, 60,20, 2};
+    const vector<int> dimentions = {30*100,20, 2};
     int firstLayer = dimentions[0];
 
-    ifstream english("frankenstein.txt");
-    ifstream gibberish("gibberish.txt");
+    ifstream frank("frankenstein.txt");
+    ifstream ody("odyssey.txt");
 
-    vector<string> engData, gibData;
-    for ( int i = 0; i<7720; i++)
+    //this chunk will read both books into separate giant strings.
+    vector<string> frankData, odyData;
+    string frankstring,odystring,line,s;
+    s= " ";
+    while(frank)
     {
-        string line; 
-        getline(english,line);
-        engData.push_back(line);
+        getline(frank,line);
+        frankstring += s;
+        frankstring += line;
+        
     }
-    for(int i = 0; i<6558; i++)
+    while(ody)
     {
-        string line; 
-        getline(gibberish,line);
-        gibData.push_back(line);
+        getline(ody,line);
+        odystring += s;
+        odystring += line;
     }
 
-    Network learner("englishUpper.net");
-    /*
-    cout << "enter a phrase : ";
-    string answer;
-    getline(cin, answer);
-    learner.setInputLayer(formToInput(answer, firstLayer,false));
-    learner.evaluate();
-    if(learner.getOutput(0) > learner.getOutput(1))
-        cout << "I think that is english!" << endl;
-    else
-        cout << "I think that is GIBBERISH, you child!" << endl;
-    cout <<learner.getOutput(0) << ' '<< learner.getOutput(1) << endl;
-    */
 
-    int subsetSize = 10, rate = 10;
+    int franksize = frankstring.size(), odysize = odystring.size();
+    for(int i = 0; i<franksize;i++)
+    {
+        string a = {};
+        while (frankstring[i] < 65 || frankstring[i] > 90)
+        {
+            if(i<franksize)i++;
+            else break;
+        }
+        if(i==franksize)break;
+        while (frankstring[i] != '.' && frankstring[i] != '!' && frankstring[i] != '?')
+        {
+            a.push_back(frankstring[i]);
+            if(i<franksize)i++;
+            else break;
+        }
+        a.push_back(frankstring[i]);
+        if(a.size()>20)
+            frankData.push_back(a);
+    }
 
-    for(int i = 0; i< 500; i++)
+    for(int i = 0; i<odysize;i++)
+    {
+        string a = {};
+        while (odystring[i] < 65 || odystring[i] > 90)
+        {
+            if(i<odysize)i++;
+            else break;
+        }
+        if(i==odysize)break;
+        while (odystring[i] != '.' && odystring[i] != '!' && odystring[i] != '?')
+        {
+            a.push_back(odystring[i]);
+            if(i<odysize)i++;
+            else break;
+        }
+        a.push_back(odystring[i]);
+        if(a.size()>20)
+            odyData.push_back(a);
+    }
+
+    frank.close();
+    ody.close();
+
+    cout << endl<< odyData[1328] << endl;
+
+
+
+    //Network learner(dimentions, false);
+    Network learner("HomerVShelly2.net");
+    int correct=0;
+
+    
+    int subsetSize = 1000;
+    float rate = 10;
+
+    for(int i = 0; i< 10; i++)
     {
         float boop = 0;
-        Network temp(dimentions, false);
+        Network temp(learner.getLayerSizes(), false);
+        correct = 0;
         for(int j = 0; j<subsetSize; j++)
         {
             vector<float> input, wanted(2);
             if(rnum() > 0.5)
             {
-                int spot = (int)(7720 * rnum());
-                input = formToInput(engData[spot],firstLayer, true);
+                int spot = (int)(frankData.size() * rnum());
+                input = formToInput(frankData[spot],firstLayer, false);
                 wanted[0] =1;
                 wanted[1] = 0;
             }
             else
             {
-                int spot = (int)(5334 * rnum());
-                input = formToInput(gibData[spot],firstLayer,true);
+                int spot = (int)(odyData.size() * rnum());
+                input = formToInput(odyData[spot],firstLayer,false);
                 wanted[0] = 0;
                 wanted[1] = 1;
             }
             learner.setInputLayer(input);
             learner.evaluate();
+            if((learner.getOutput(0)>learner.getOutput(1) && wanted[0] == 1)|| (learner.getOutput(0)<=learner.getOutput(1) && wanted[1] == 1))
+                correct++;
             
-            
-            temp += learner.gradient(wanted);
+            temp += learner.gradient(wanted,0.1);
             boop += learner.cost(wanted);
         }
-        temp /= (subsetSize / (float)rate);
+        temp /= (subsetSize / rate);
         learner-= temp;
-        cout<< boop/subsetSize << endl;
+        cout<< boop/subsetSize << " Number correct out of "<<subsetSize<<": "<< correct<< endl;
     }
-    learner.toFile("englishUpper.net");
-    
-
-
+    learner.toFile("HomerVShelly2.net");
     
 }

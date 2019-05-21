@@ -2,6 +2,8 @@
 #define _NEURAL_NET_
 #include "net_fun.h"
 
+
+
 class Layer;
 class Node
 {
@@ -16,7 +18,7 @@ class Node
     //random biases, unassigned previous layer
     Node();
     //
-    Node(Layer * layerBefore, bool randomWeights = true);
+    Node(Layer * layerBefore, bool randomWeights = true, bool allones = false);
     //for initial layer, where there are no weights
     Node(float act);
     //this is the only constructer that doesn't have a hint of randomness to it, as it takes info from a previously made network
@@ -29,6 +31,7 @@ class Node
     float getWeight(int n);
     float calcActivation();
     float getActivation(){return activation;}
+    float getBias(){return b;}
     void printWeights(ostream &o);
     void printBias(ostream &o){o <<fixed<< b << "\n\n";}
 
@@ -46,7 +49,7 @@ class Layer
     unsigned int size;
     
     public:
-    Layer(unsigned int sz, Layer* layerBefore = 0, bool randomWeights = true);
+    Layer(unsigned int sz, Layer* layerBefore = 0, bool randomWeights = true, bool allones = false);
     ~Layer();
 
     unsigned int getSize(){return size;}
@@ -63,18 +66,20 @@ class Network
     const int DEFAULT_NODES_PER_LAYER = 15;
     // count of layers in basic neural net
     unsigned int layers;
+    public:
     // array of layers, the entire network
     // 0th layer is input layer
-    Layer ** myNet;
+    Layer ** myNet; 
 
-    public:
+    
     //literally the most basic network I can make.
     Network(unsigned int ls);
 
     //makes network with random first layer
     // sizes of layers go with values in the vector
-    Network(vector<int> layerSizes, bool randomWeights = true);
+    Network(vector<int> layerSizes, bool randomWeights = true, bool allones = false);
     Network(string name);
+    ~Network();
 
     Network& operator+=(const Network &a);
     Network& operator-=(const Network &a);
@@ -88,14 +93,17 @@ class Network
     void toFile(string name);
     void setInputLayer(vector<float> v);
     float getOutput(int i){return (*myNet[layers -1])[i].getActivation();}
-
+    int getInputSize(){return myNet[0]->getSize();}
+    vector<int> getLayerSizes();
     
-    Network gradient(vector<float> wantedOutput);
+    Network gradient(vector<float> wantedOutput, float dropout = 0);
     //sudocode for the actual learning process
     void learn();
 };
 
 vector<float> formToInput(string in, int nodeSpace, bool caseSensitive);
+string extractString(string a, int index, int length);
+
 
 
 #endif // _NEURAL_NET_

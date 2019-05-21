@@ -16,14 +16,16 @@ Node::Node(float act)
     ws = 0;
     activation = act;
 }
-Node::Node(Layer *layerBefore, bool randomWeights)
+Node::Node(Layer *layerBefore, bool randomWeights, bool allones)
 {
     //initialize random or zero net, not in base layer
 
     if (randomWeights)
         b = 2 * rnum() - 1;
     else
+    {
         b = 0;
+    }
 
     lBefore = layerBefore;
     activation = 0;
@@ -33,8 +35,14 @@ Node::Node(Layer *layerBefore, bool randomWeights)
         for (unsigned int i = 0; i < lBefore->getSize(); i++)
             ws[i] = 2 * rnum() - 1;
     else
-        for (unsigned int i = 0; i < lBefore->getSize(); i++)
-            ws[i] = 0;
+    {
+        if(allones)
+            for (unsigned int i = 0; i < lBefore->getSize(); i++)
+                ws[i] = 1;
+        else
+            for (unsigned int i = 0; i < lBefore->getSize(); i++)
+                ws[i] = 0;
+    }
 }
 Node::Node(istream &is, int weights, Layer *layerBefore)
 {
@@ -150,7 +158,7 @@ void Node::setActivation(float a)
 {
     //if being given a set activation, it does not need weights
     //as it must be in the base layer.
-    ws = 0;
+    //ws = 0;
     if (a < 0)
         a = 0;
     else if (a > 1)
@@ -174,7 +182,7 @@ void Node::printWeights(ostream &o)
         o << fixed << ws[i] << '\n';
 }
 
-Layer::Layer(unsigned int sz, Layer *layerBefore, bool randomWeights)
+Layer::Layer(unsigned int sz, Layer *layerBefore, bool randomWeights, bool allones)
 {
     size = sz;
     //myNodes = new Node(layerBefore)[sz];
@@ -182,7 +190,7 @@ Layer::Layer(unsigned int sz, Layer *layerBefore, bool randomWeights)
     if (layerBefore)
     {
         for (unsigned int i = 0; i < sz; i++)
-            myNodes[i] = Node(layerBefore, randomWeights);
+            myNodes[i] = Node(layerBefore, randomWeights,allones);
     }
 }
 Layer::~Layer()
@@ -191,8 +199,10 @@ Layer::~Layer()
     {
         myNodes[i].~Node();
     }
-    if (myNodes)
-        delete[] myNodes;
+    
+    //if (myNodes)
+    //    delete[] myNodes;
+    
 }
 void Layer::printActivations()
 {
@@ -211,14 +221,14 @@ Network::Network(unsigned int ls)
         myNet[i] = new Layer(DEFAULT_NODES_PER_LAYER, myNet[i - 1]);
     }
 }
-Network::Network(vector<int> v, bool randomWeights)
+Network::Network(vector<int> v, bool randomWeights, bool allones)
 {
     layers = v.size();
     myNet = new Layer *[layers];
     myNet[0] = new Layer(v[0]);
     for (unsigned int i = 1; i < layers; i++)
     {
-        myNet[i] = new Layer(v[i], myNet[i - 1], randomWeights);
+        myNet[i] = new Layer(v[i], myNet[i - 1], randomWeights,allones);
     }
 }
 Network::Network(string name)
@@ -250,7 +260,17 @@ Network::Network(string name)
         }
     }
 }
+Network::~Network()
+{
+    
+    for(unsigned int i = 0; i< layers; i++)
+    {
+        if(myNet[i])myNet[i]->~Layer();
+    }
+    
+    if(myNet) delete myNet;
 
+}
 void Network::evaluate()
 {
     for (unsigned int i = 1; i < layers; i++)
@@ -359,13 +379,10 @@ Network &Network::operator-=(const Network &a)
     return *this;
 }
 
-Network Network::gradient(vector<float> wo)
+Network Network::gradient(vector<float> wo, float dropout)
 {
     vector<int> v;
-    for (unsigned int i = 0; i < layers; i++)
-    {
-        v.push_back(myNet[i]->getSize());
-    }
+    v = getLayerSizes();
 
     Network grad(v, false);
 
@@ -376,7 +393,11 @@ Network Network::gradient(vector<float> wo)
         //this loop will run for each node
         for (int j = 0; j < v[i]; j++)
         {
+            bool dropped = rnum() < dropout;
+
             float currentActivation = (*myNet[i])[j].getActivation();
+            if(dropped) currentActivation = 0;
+
             Node gradientNode(myNet[i - 1], false);
             float biasGradient, *weightGradients = new float[v[i - 1]];
 
@@ -482,41 +503,78 @@ vector<float> formToInput(string in, int nodeSpace, bool caseSensitive)
     }
     //when formatting for word AIs that are NOT CASE SENSITIVE, 
     //nodes 0-25 are for 'a' thru 'z'
-    // 26 for space, 27 for punctuation, 28 for number, and 29 for other.
-    for (unsigned int i = 0; i < in.size() && nodeSpace > 30; i++)
+    // 26 for space, 27 for comma, 28 for period, and 29 for question mark, 30 for exclamation
+    //31 for single quote, 32 for double quote
+    for (unsigned int i = 0; i < in.size() && nodeSpace >= 33; i++)
     {
         //is a lowercase letter
         if (in[i] >= 97 && in[i] <= 122)
         {
-            result[30 * i + in[i] - 97] = 1;
+            result[33 * i + in[i] - 97] = 1;
         }
         //uppecase
         else if (in[i] >= 65 && in[i] <= 90)
         {
-            result[30 * i + in[i] - 65] = 1;
+            result[33 * i + in[i] - 65] = 1;
         }
         //space
         else if (in[i] == 32)
         {
-            result[30 * i + 26] = 1;
+            result[33 * i + 26] = 1;
         }
-        //punctuation
-        else if (in[i] == ',' || in[i] == '.' || in[i] == '!' || in[i] == ';' || in[i] == '?')
+        //comma
+        else if (in[i] == ',' )
         {
-            result[30 * i + 27] = 1;
+            result[33 * i + 27] = 1;
         }
-        //nomber
-        else if(in[i] >= '0' && in[i] <= '9')
+        //period
+        else if(in[i] == '.')
         {
-            result[30 * i + 28] = 1;
+            result[33 * i + 28] = 1;
         }
-        //other
-        else
+        //question mark
+        else if(in[i] == '?')
         {
-            result[30 * i + 29] = 1;
+            result[33 * i + 29] = 1;
+        }//exclame
+        else if (in[i] == '!' )
+        {
+            result[33 * i + 30] = 1;
+        }
+        //single quote
+        else if(in[i] == '\'')
+        {
+            result[33 * i + 31] = 1;
+        }
+        //doubel quote
+        else if(in[i] == '"')
+        {
+            result[33 * i + 32] = 1;
         }
         
-        nodeSpace -= 30;
+        nodeSpace -= 33;
+    }
+    return result;
+}
+vector<int> Network::getLayerSizes()
+{
+    vector<int> result;
+    for(unsigned int i = 0; i<layers; i++)
+    {
+        result.push_back(myNet[i]->getSize());
+    }
+    return result;
+}
+string extractString(string a, int index, int length)
+{
+    string result;
+    if (index + length > (int)a.size())
+    {
+        length = a.size() - index;
+    }
+    for (int i = 0; i < length; i++)
+    {
+        result.push_back(a[index + i]);
     }
     return result;
 }

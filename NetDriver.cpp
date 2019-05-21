@@ -1,34 +1,26 @@
 #include "Neural_net.h"
 
-//TODO: 
+//TODO:
 int main()
 {
-    const vector<int> dimentions = {1000, 20, 2};
+    const vector<int> dimentions = {33 * 3, 3, 2};
     int firstLayer = dimentions[0];
-    vector<float> input(firstLayer);
-    for(int i = 0; i<firstLayer;i++)
-        input[i] = 0.5;
 
+    //srand(time(NULL));
 
-    srand(time(NULL));
-    
-    
-    Network a(dimentions,false);
-    a.toFile("before.net");
-    a.setInputLayer(input);
+    Network a(dimentions, false, true);
+    //    Network a("after.net");
+
+    a.setInputLayer(formToInput("hi", firstLayer, false));
+
     a.evaluate();
-    vector<float> v = {1,1};
-    cout << "first cost: " << a.cost(v)<<endl;
-    for(int i = 0; i<100; i++)
+    vector<float> v = {1, 0};
+    cout << "first cost: " << a.cost(v) << endl;
+    for (int i = 0; i < 100; i++)
     {
-        a-=a.gradient(v);
+        a -= a.gradient(v);
         a.evaluate();
     }
-    cout << "last cost: " << a.cost(v)<<endl;
-    
+    cout << "\nlast cost: " << a.cost(v) << endl;
     a.toFile("after.net");
-    
-
-
-
 }
