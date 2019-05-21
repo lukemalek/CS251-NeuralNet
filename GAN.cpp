@@ -164,7 +164,7 @@ Network GAN::generatorGradient(vector<float> wo, float dropout)
             delete[] weightGradients;
         }
     }
-
+    //grad *= -4 * log(1- 0.5 * cost(wo));
     return grad;
 }
 
@@ -206,6 +206,25 @@ Network GAN::discriminatorGradient(vector<float> wo, float dropout)
             delete[] weightGradients;
         }
     }
-
+    //grad *= -4 * log(1- 0.5 * cost(wo));
     return grad;
+}
+
+float GAN::variance()
+{
+    setInputLayer();
+    evaluate();
+    string a = getContentLayer();
+
+    setInputLayer();
+    evaluate();
+    string b = getContentLayer();
+
+    float total = 0; 
+    for(unsigned int i = 0; i< a.size(); i++)
+    {
+        if (a[i] != b[i])
+            total++;
+    }
+    return total;
 }

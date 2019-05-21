@@ -19,12 +19,17 @@ class GAN: public Network
     void setInputLayer();
     void setContentLayer(string a);
     void evaluate();
+    int getIndexContent(){return contentLayer;}
 
     Network generatorGradient(vector<float> wantedOutput, float dropout = 0);
     Network discriminatorGradient(vector<float> wantedOutput, float dropout = 0);
     string getContentLayer();
 
+    float variance();
+
+
 };
+
 
 
 #endif //_GAN_

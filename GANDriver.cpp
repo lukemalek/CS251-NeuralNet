@@ -3,10 +3,16 @@
 
 int main()
 {
-    srand(time(NULL));
-    const vector<int> dims{1,66,1};
-    GAN bigBoy("frankGAN.net");
+    
+    GAN one("PRESENTABLEfrankGAN.net");
 
+    for(int i = 0; i< 10; i++)
+    {
+        one.setInputLayer();
+        one.evaluate();
+        cout << one.getContentLayer() << endl;
+    }
+    /*
     bigBoy.setContentLayer("aeyvsdmh.o xe  !rhfl");
     bigBoy.evaluate();
     cout << bigBoy.getContentLayer() <<endl;
@@ -16,6 +22,6 @@ int main()
     bigBoy.evaluate();
     cout << bigBoy.getContentLayer()<<endl;
     cout << bigBoy.getOutput(0) << " " << bigBoy.getOutput(1) << endl;
-
+*/
 
 }
