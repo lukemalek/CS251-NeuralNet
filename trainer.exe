@@ -10,6 +10,6 @@ echo "Press [CTRL+C] to stop at any time"
 
 while true
 do
-    echo "training \"englishLearner\" "
-    ./englishLearner
+    echo "training \"frankGAN2\" "
+    ./frankGAN2
 done
