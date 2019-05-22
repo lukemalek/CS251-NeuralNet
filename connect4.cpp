@@ -80,11 +80,11 @@ for(int i = 0; i<7;i++){
                 for(int i = 0; i<7; i++){
                     if(i == choiceStorage[index]){
                     wanted[i]=1;
-                    cout<<"a";
+                    //cout<<"a";
                     }
                     else{ 
                     wanted[i]=0;
-                    cout<<"b";
+                    //cout<<"b";
                     }
                 }
             }else{
@@ -98,16 +98,16 @@ for(int i = 0; i<7;i++){
                     //cout<<"d";
                     }
                     else{
-                      //wanted[i] = 1;
+                      wanted[i] = 1;
                       //cout<<"e";
-                      wanted[i] = (1/(selectionsForThisMove-1));
+                      //wanted[i] = (1/(selectionsForThisMove-1));
                     }
                     
                 }
             }
             learnerP->setInputLayer(inputStorage[index]);
             learnerP->evaluate();
-            temp += (learnerP->gradient(wanted));
+            temp += (learnerP->gradient(wanted, 0.1));
             totalCost+= learnerP->cost(wanted);
 
         }
@@ -130,21 +130,21 @@ for(int i = 0; i<7;i++){
                 for(int i = 0; i<7; i++){
                     if(i == choiceStorage[index]){
                     wanted[i]=0;
-                    cout<<"h";
+                    //cout<<"h";
                     }else if(availableStorage[index][i] == false){
                     wanted[i]=0;
-                    cout<<"i";
+                    //cout<<"i";
                     }
                     else{
-                      //wanted[i]=1;
-                      cout<<"j";
-                      wanted[i] = (1/(selectionsForThisMove-1));
+                      wanted[i]=1;
+                      //cout<<"j";
+                      //wanted[i] = (1/(selectionsForThisMove-1));
                     }
                 }
             }
             learner2P->setInputLayer(inputStorage[index]);
             learner2P->evaluate();
-            temp2 += (learner2P->gradient(wanted));
+            temp2 += (learner2P->gradient(wanted, 0.1));
             totalCost+= learner2P->cost(wanted);
 
     }
@@ -170,17 +170,17 @@ for(int i = 0; i<7;i++){
     }
 */
 float moveFloat = (float) moveNumber;
-cout<<"MOVE Number: "<<moveNumber<<endl;
+//cout<<"MOVE Number: "<<moveNumber<<endl;
     if(blackWon){
       //cout<<moveNumber<<endl;
-      temp *= (1*((2*(moveFloat))/43));
-      temp2 *= (5*(2*((43- (moveFloat)))/43)); 
-      cout<<"0 or black won this one"<<endl;
+      temp *= (.1*(1*((2*(moveFloat))/43)));
+      temp2 *= (.1*(6*(2*((43- (moveFloat)))/43))); 
+      //cout<<"0 or black won this one"<<endl;
     }
     if(blackWon == false){
-      temp *= (5*(2*(43 - (moveFloat))/43));
-      temp2 *= (1*(2*((moveFloat)/43)));
-      cout<<"X or red won this one"<<endl;
+      temp *= (.1*(6*(2*(43 - (moveFloat))/43)));
+      temp2 *= (.1*(1*(2*((moveFloat)/43))));
+      //cout<<"X or red won this one"<<endl;
     }
       
     *(learnerP)-= temp;

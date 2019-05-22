@@ -53,8 +53,8 @@ class GameBoard{
         initializeGameBoard();
         //cout<<learnerP<<endl;
         const vector<int> dimensions = {7*6*3,75,40, 7};
-        //Network learner(dimensions);
-        //Network learner2(dimensions);
+        //Network learner(dimensions,false);
+        //Network learner2(dimensions,false);
         Network learner("connect4black.net");
         Network learner2("connect4red.net");
         learnerP = &(learner);
