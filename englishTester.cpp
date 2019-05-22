@@ -3,12 +3,14 @@ using namespace std;
 int main()
 {
 
-    
+    //loads in the very good net that I have
     Network learner("HomerVShelly2.net");
     int correct=0,attempted=0;
     
     bool keepGo = true;
     cout<< "HomerVShelly2 net tester! I work best when inputting sentences with a bit of bulk to them (25+ chars)\n";
+
+    //continuously prompts for a phrase and returns what the network thinks about it. gives user ability to keep track of how correct bot was.
     while (keepGo)
     {
         
@@ -36,6 +38,8 @@ int main()
             correct++;
         }
     }
+
+    //gives summary
     cout << "I guessed " << correct << " out of " << attempted << " correctly! (" << ((float)correct)/attempted << ")\n";
 
     

@@ -1,0 +1,30 @@
+#!/bin/bash
+
+#will offer to run any of the functioning programs that we have
+
+
+clear
+echo "Luke and Eliott's Neural Nets!"
+echo
+
+while true
+do
+    echo "Enter a number to choose the corresponding program."
+    echo
+    echo "[1] Frankenstein versus The Odyssey trainer"
+    echo "[2] Frankenstein versus The Odyssey interactive test"
+    echo "[3] Connect 4 Bot trainer"
+    echo "[4] GAN trainer"
+    echo "[5] Exit"
+    read input
+    case $input in
+	1) ./englishLearner;;
+	2) ./englishTester;;
+	3) ./connect4driver;;
+	4) ./frankGAN2;;
+	5) break;;
+	*) continue;clear ;
+    esac
+done
+	
+echo "Bye!"

@@ -156,9 +156,6 @@ float Node::calcActivation()
 }
 void Node::setActivation(float a)
 {
-    //if being given a set activation, it does not need weights
-    //as it must be in the base layer.
-    //ws = 0;
     if (a < 0)
         a = 0;
     else if (a > 1)
@@ -393,11 +390,13 @@ Network Network::gradient(vector<float> wo, float dropout)
         //this loop will run for each node
         for (int j = 0; j < v[i]; j++)
         {
+            //determines if the given activation will be treated as a zero,
             bool dropped = rnum() < dropout;
 
             float currentActivation = (*myNet[i])[j].getActivation();
             if(dropped) currentActivation = 0;
 
+            //puts the wanted changes into a new node called "gradientNode"
             Node gradientNode(myNet[i - 1], false);
             float biasGradient, *weightGradients = new float[v[i - 1]];
 
@@ -410,7 +409,7 @@ Network Network::gradient(vector<float> wo, float dropout)
                 weightGradients[k] = dCdA * currentActivation * (1 - currentActivation) * ((*myNet[i - 1])[k].getActivation());
             }
 
-            //wrapping everything up and setting a node to it's gradient in the returned network
+            //wrapping everything up and setting a node to its gradient in the returned network
             gradientNode.setWeights(weightGradients);
             gradientNode.setBias(biasGradient);
             (*grad.myNet[i])[j] = gradientNode;
@@ -424,6 +423,8 @@ float Network::dCostdActivation(int l, int n, vector<float> wantO)
 {
     int iterations = layers - l;
     float value = 0;
+    //Only if iterations is one will the function not be called recursively.
+    //at the outermost layer, change in cost with respect to activation is simply the difference of the two
     if (iterations == 1)
     {
         value = (*myNet[l])[n].getActivation() - wantO[n];
@@ -431,6 +432,7 @@ float Network::dCostdActivation(int l, int n, vector<float> wantO)
     }
     else
     {
+        //calculating a gross sum of partial derivatives
         int bounds = myNet[l + 1]->getSize();
         for (int i = 0; i < bounds; i++)
         {
@@ -450,6 +452,7 @@ void Network::setInputLayer(vector<float> v)
             (*myNet[0])[i].setActivation(v[i]);
         }
     }
+    //will not set activation if sizes don't match
     else
         cout << "you goofed" << endl;
 }

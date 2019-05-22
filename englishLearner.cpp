@@ -27,7 +27,7 @@ int main()
         odystring += line;
     }
 
-
+    //converts the giant string into a vector of string, where each string is a sentence, starts at a capital letter and ends at . or ? or !
     int franksize = frankstring.size(), odysize = odystring.size();
     for(int i = 0; i<franksize;i++)
     {
@@ -49,6 +49,7 @@ int main()
             frankData.push_back(a);
     }
 
+    //converts the giant string into a vector of string, where each string is a sentence, starts at a capital letter and ends at . or ? or !
     for(int i = 0; i<odysize;i++)
     {
         string a = {};
@@ -72,6 +73,7 @@ int main()
     frank.close();
     ody.close();
 
+    //says the funny line about puppies
     cout << endl<< odyData[1328] << endl;
 
 
@@ -82,13 +84,18 @@ int main()
 
     
     int subsetSize = 1000;
-    float rate = 10;
+    float rate = 0.2;
 
+    //ten times over
     for(int i = 0; i< 10; i++)
     {
         float boop = 0;
+
+        //makes network to hold gradient of the current batch
         Network temp(learner.getLayerSizes(), false);
         correct = 0;
+        
+        //trains the net with subsetSize about of data
         for(int j = 0; j<subsetSize; j++)
         {
             vector<float> input, wanted(2);
@@ -111,13 +118,19 @@ int main()
             if((learner.getOutput(0)>learner.getOutput(1) && wanted[0] == 1)|| (learner.getOutput(0)<=learner.getOutput(1) && wanted[1] == 1))
                 correct++;
             
-            temp += learner.gradient(wanted,0.1);
+            //given the output that the net should have given, compute gradient
+            temp += learner.gradient(wanted,0.9);
             boop += learner.cost(wanted);
         }
+        //scale gradient, then move backwards along it.
         temp /= (subsetSize / rate);
         learner-= temp;
+
+        //says how many correct classifcations were made.
         cout<< boop/subsetSize << " Number correct out of "<<subsetSize<<": "<< correct<< endl;
     }
+
+    //saves the file for next time
     learner.toFile("HomerVShelly2.net");
     
 }
