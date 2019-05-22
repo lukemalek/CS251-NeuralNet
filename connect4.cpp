@@ -1,4 +1,5 @@
 #include"connect4.h"
+#include"sd_fun.h"
 
 void GameBoard::initializeGameBoard(){
 
@@ -41,6 +42,16 @@ void GameBoard::initializeGameBoard(){
         }
         else{ 
           cout << "   ";}
+      
+      
+ //char* color = "red";
+
+//append(yaml,"View_",row+column);
+//append(yaml,":\nstyle:\nbackgroundColor: ",color,"\nwidth: 100\nheight: 100\nmarginLeft: 0\nmarginTop: 0\nborderRadius: 25%\nborderWidth: 25\nborderColor: blue​");
+
+     
+      
+      
       }
       cout << "|" << endl;
     }
@@ -55,97 +66,100 @@ void GameBoard::initializeGameBoard(){
   } else if (blackWon == false){
     numRedWins++;
   }
-    //cout<<"blackWon: "<<blackWon;
+//this is the vector that will be filled in with either 1 or 0, willl be used as the argument for gradient
+//for each move, if the player won the game, the corresponding value of wanted that matches their selection will be 1 and all the other 6 will be zero
+//but if they lost, the value of wanted that matches their move will be 0 and the other 6 will be 1
+//essentially meaning if an AI wins a game it will keep doing everything it did and if an AI loses it will stop doing what it did and start trying to do everything else
     vector <float> wanted(7);
-    //cout<<dimensions<<endl;
-    //for(auto elem : dimensions)
-        //cout << elem << "\n";
-    //cout<<"made it here"<<endl;
-    //cout<<"made it here"<<endl;
+
+//create two blank networks which will each store the gradients from half of the moves in a game, temp for learner and temp 2 for learner2
     Network temp(dimensions, false, false);
     Network temp2(dimensions, false, false);
-    double totalCost = 0;
+    //double totalCost = 0;
 
+//loops through all moves that took place during the last game, starting from move number 0
     for(int index = 0; index < moveNumber; index++){
-      int selectionsForThisMove = 0;
-for(int i = 0; i<7;i++){
-  if(availableStorage[moveNumber][i]){
-  selectionsForThisMove++;
-  }
-}
+      //int selectionsForThisMove = 0;
+
+//for(int i = 0; i<7;i++){
+  //if(availableStorage[moveNumber][i]){
+  //selectionsForThisMove++;
+  //}
+//}
+
+//This first if else statement decides if a move was taken by learner or learner2,
+//the if part corresponds to learner 1
         if(index%2 == 0){
-            //stuff for the learner 1 network which handles black moves
+          //nested if else statemnt checks which color won
             if(blackWon){
-                //cout<<"Im black and I won, adding move number "<<index<<" to temp"<<endl;
+                // for loop fills wanted with 6 0's and a 1 (learner won)
                 for(int i = 0; i<7; i++){
                     if(i == choiceStorage[index]){
                     wanted[i]=1;
-                    //cout<<"a";
                     }
                     else{ 
                     wanted[i]=0;
-                    //cout<<"b";
                     }
                 }
-            }else{
-                                //cout<<"Im black and I lost, adding move number "<<index<<" to temp"<<endl;
+            }           
+            else{
+              //for loop fills wanted with 6 1's and a 0 (learner lost)
                 for(int i = 0; i<7; i++){
                     if(i == choiceStorage[index]){
                     wanted[i]=0;
-                    //cout<<"c";
+                    //except in the case of this else if, which will put a zero if the column was filled to the brim on that turn, as we dont want the AI trying to put pieces into columns it cannot
                     }else if(availableStorage[index][i] == false){
                     wanted[i]=0;
-                    //cout<<"d";
                     }
                     else{
                       wanted[i] = 1;
-                      //cout<<"e";
-                      //wanted[i] = (1/(selectionsForThisMove-1));
                     }
                     
                 }
             }
+            //finally, calculates a gradient and adds it to temp
+            //uses input storage for that move to recreate the inputs, and since no weight or biases have been changed yet, we get the exact same activations and final outputs from that move 
             learnerP->setInputLayer(inputStorage[index]);
             learnerP->evaluate();
             temp += (learnerP->gradient(wanted, 0.1));
-            totalCost+= learnerP->cost(wanted);
+            //totalCost+= learnerP->cost(wanted);
 
         }
+    //this is the else part which corresponds to learner2
         else{
-            //stuff for the learner 2 network which handles red moves, also counts filling up the board as a dub for red which i kinda like
+
+                          //again checks which network won and which lost
             if(!blackWon){
-                                //cout<<"Im red and I won, adding move number "<<index<<" to temp2"<<endl;
+                        // for loop fills wanted with 6 0's and a 1 (learner2 won)
                 for(int i = 0; i<7; i++){
                     if(i == choiceStorage[index]){
                     wanted[i]=1;
-                    //cout<<"f";
                     }
                     else{
                     wanted[i]=0;
-                    //cout<<"g";
                     }
                 }
             }else{
-                                //cout<<"Im red and I lost, adding move number "<<index<<" to temp2"<<endl;
+              //for loop fills wanted with 6 1's and a 0 (learner2 lost)
                 for(int i = 0; i<7; i++){
                     if(i == choiceStorage[index]){
                     wanted[i]=0;
-                    //cout<<"h";
-                    }else if(availableStorage[index][i] == false){
+
+                    }
+                    //same principle with elseif for filled columns here
+                    else if(availableStorage[index][i] == false){
                     wanted[i]=0;
-                    //cout<<"i";
                     }
                     else{
                       wanted[i]=1;
-                      //cout<<"j";
-                      //wanted[i] = (1/(selectionsForThisMove-1));
                     }
                 }
             }
+            //same evaluation process, using leaerner2 and temp2 though
             learner2P->setInputLayer(inputStorage[index]);
             learner2P->evaluate();
             temp2 += (learner2P->gradient(wanted, 0.1));
-            totalCost+= learner2P->cost(wanted);
+            //totalCost+= learner2P->cost(wanted);
 
     }
     }
@@ -169,20 +183,25 @@ for(int i = 0; i<7;i++){
       //temp2 *=.1;
     }
 */
+
+//this part adds weight to both temp and temp2 to accmplosh two things, first to make it so that the activations stay in a consistent range and do not all go to 1 or 0,
+//and secondly, to implement the principle that you should learn the most by losing a very short game or by winning a long game, and that you should also learn the least by winning a
+//short game or losing a long game. If an AI is getting beat in the first 7 or eight m,oves, they are clearly missing something and need large changes to their activations, but if 
+// they are winning in the first few moves it is usally due to their opponent making an error and thus they should not get this easy victory too far ingrained into them.
+//If they lose a long game it is more likely that they were at least doing something right at the begining, so they should not make too drastic of changes as they just need little tweaks
 float moveFloat = (float) moveNumber;
-//cout<<"MOVE Number: "<<moveNumber<<endl;
+
+//the first goal is accomplished by the 0.01 and either 1 or 3 and the second goal is accomplished by the part with 43 and 2
     if(blackWon){
-      //cout<<moveNumber<<endl;
       temp *= (.01*(1*((2*(moveFloat))/43)));
-      temp2 *= (.01*(6*(2*((43- (moveFloat)))/43))); 
-      //cout<<"0 or black won this one"<<endl;
+      temp2 *= (.01*(3*(2*((43- (moveFloat)))/43))); 
     }
     if(blackWon == false){
-      temp *= (.01*(6*(2*(43 - (moveFloat))/43)));
+      temp *= (.01*(3*(2*(43 - (moveFloat))/43)));
       temp2 *= (.01*(1*(2*((moveFloat)/43))));
-      //cout<<"X or red won this one"<<endl;
     }
-      
+
+    //adds the gradients for this game to their corresponding networks and then saves the networks to their files.
     *(learnerP)-= temp;
     *(learner2P)-= temp2;
     learnerP->toFile("connect4black.net");
@@ -223,9 +242,9 @@ float moveFloat = (float) moveNumber;
             outputs [i] = learner2P->getOutput(i);
         }
     }
-    for(int i = 0; i<7; i++)
-    cout<<outputs[i]<<" ";
-    cout<<endl;
+    //for(int i = 0; i<7; i++)
+    //cout<<outputs[i]<<" ";
+    //cout<<endl;
 
   for(int i = 0; i<7; i++)
     availableStorage[moveNumber][i] = availableSelections[i];
