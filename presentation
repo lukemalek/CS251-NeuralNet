@@ -2,7 +2,7 @@
 
 #will offer to run any of the functioning programs that we have
 
-
+make -f Makefile englishLearner englishTester connect4driver frankGAN2
 clear
 echo "Luke and Eliott's Neural Nets!"
 echo

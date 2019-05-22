@@ -23,9 +23,11 @@ int main()
     int len = 50;
     vector<int> dims = {20, len * 33, 20, 2};
 
-    //GAN frankGAN(dims, 1, true);
-    //frankGAN *= 0.2;
+
     GAN frankGAN("GANpresentation.net");
+    
+    
+    
 
     //all info for how big of steps along gradient is taken, how big the subsets of training data is,
     //various variable that affect learning
