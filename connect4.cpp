@@ -16,8 +16,10 @@ void GameBoard::initializeGameBoard(){
       blacksMove = true;
       isDraw = false;
       blackWon = NULL;
+      //all columns are avaiable to put into at the start of the game
       for(int i = 0; i< 7; i++)
 	availableSelections[i]=true;
+  //all slots are empty and nore are black or red at the start of the game
         for(int i=0; i<7;i++){
             for(int j=0; j<6;j++){
                 isEmpty[i][j] = true;
@@ -28,8 +30,8 @@ void GameBoard::initializeGameBoard(){
 }
 
     void GameBoard::displayCurrentGameBoard(){
-        //for now, eventually will display in yaml
-                     for(int row = 5; row>= 0; row--)
+        //prints the game board with X representing red pieces and O representing black ones
+for(int row = 5; row>= 0; row--)
     {
       cout << "|" ;
       for(int column = 0; column < 7; column++)
@@ -41,17 +43,7 @@ void GameBoard::initializeGameBoard(){
           cout << " O ";
         }
         else{ 
-          cout << "   ";}
-      
-      
- //char* color = "red";
-
-//append(yaml,"View_",row+column);
-//append(yaml,":\nstyle:\nbackgroundColor: ",color,"\nwidth: 100\nheight: 100\nmarginLeft: 0\nmarginTop: 0\nborderRadius: 25%\nborderWidth: 25\nborderColor: blue​");
-
-     
-      
-      
+          cout << "   ";}   
       }
       cout << "|" << endl;
     }
@@ -59,7 +51,6 @@ void GameBoard::initializeGameBoard(){
     }
 
     void GameBoard::updateNetworks(){
-        //cout<<learnerP<<endl;
         const vector <int> dimensions = {7*6*3,75,40, 7};
     if(blackWon){
     numBlackWins++;
@@ -79,13 +70,7 @@ void GameBoard::initializeGameBoard(){
 
 //loops through all moves that took place during the last game, starting from move number 0
     for(int index = 0; index < moveNumber; index++){
-      //int selectionsForThisMove = 0;
 
-//for(int i = 0; i<7;i++){
-  //if(availableStorage[moveNumber][i]){
-  //selectionsForThisMove++;
-  //}
-//}
 
 //This first if else statement decides if a move was taken by learner or learner2,
 //the if part corresponds to learner 1
@@ -163,26 +148,6 @@ void GameBoard::initializeGameBoard(){
 
     }
     }
-    /*
-    if (blackWon && moveNumber > 19){
-      //black won in a long game, should do this more
-      //temp *= 10;
-      //red lost, but in a long game, was on the right track and shouldnt change too much
-      temp2 *=.1;
-    }
-    if (blackWon && moveNumber < 19){
-      //temp *= .1;
-      temp2 *=10;
-    }
-    if (blackWon == false && moveNumber > 19){
-      temp *= .1;
-      //temp2 *=10;
-    }
-    if (blackWon == false && moveNumber < 19){
-      temp *= 10;
-      //temp2 *=.1;
-    }
-*/
 
 //this part adds weight to both temp and temp2 to accmplosh two things, first to make it so that the activations stay in a consistent range and do not all go to 1 or 0,
 //and secondly, to implement the principle that you should learn the most by losing a very short game or by winning a long game, and that you should also learn the least by winning a
@@ -242,9 +207,6 @@ float moveFloat = (float) moveNumber;
             outputs [i] = learner2P->getOutput(i);
         }
     }
-    //for(int i = 0; i<7; i++)
-    //cout<<outputs[i]<<" ";
-    //cout<<endl;
 
   for(int i = 0; i<7; i++)
     availableStorage[moveNumber][i] = availableSelections[i];
@@ -253,9 +215,13 @@ float moveFloat = (float) moveNumber;
     //choice is goint to represent a column number, so a value from 0 to 6
     int choice = -1;
     double Maxvalue = -1000;
-    //bool needRandom = false;
     int choices [7];
     int pos = 0;
+    //creates vector choices that contains all outputs that are avaiavlle and have the highest value
+    //essentially used for the cause that the network has an equal prefrence for more than one of the possible columns it could chose from
+    //makes that choice randomly because that is the fiarest way
+
+//finds what the maximum value of outputs is
     for (int i = 0; i<7; i++){
         if(availableSelections[i]){
           if (outputs[i]>Maxvalue)
@@ -263,33 +229,26 @@ float moveFloat = (float) moveNumber;
         }
     }
 
+//puts all availaible choices with that value into a vector
     for(int i = 0; i<7; i++){
         if(availableSelections[i]){
-            //if(outputs[i]> Maxvalue){
-                 //choices[pos]= i;
-                //Maxvalue = outputs[i];
-                //cout << "here";
-            //}
-    // interesting little feature, if two columns have the same "prefrence" as given by outputs, it will randomly choose between the two
-    //avoids getting stuck with too much unwarranted preference for any values. In the case that for example, all the outputs are 1
-    //this way, at least some times, it wouldn't just choose column 0 over and over in that hypothetical scenario. It would at least sometimes end up doing 
-    //something else and having a possibility to learn more
             if(outputs[i] == Maxvalue){
               choices [pos] = i;
               pos++;
-              //cout<<"ya";
-              //needRandom = true;
 	    }
         }
 
     } 
+
+    //randomly chooses one of the elements of choices (the vestor with equal values) and sets that equal to choice
     int c = (int)(rnum()*(pos));
-//cout<<"made choice "<<c<<" from "<<pos<<" choices"<<endl;
      choice = choices[c];   
+     //keeps track of summary statistics
       numChoices+= pos;
 
     //stores each of the moves of the game(in terms of column number) in an array with index being the move number
     choiceStorage[moveNumber] = choice;
+    //actually puts the move into the board and updates the board
     makeMove(choice);
     //switches blacksMove from true to false or visa versa
         if(blacksMove == true){
@@ -319,7 +278,7 @@ float moveFloat = (float) moveNumber;
 
     //sets the correct slot to FALSE for isEmpty
   isEmpty[c][height] = false;
-  //decreases the number of open spaces
+  //decreases the number of open spaces, since a piece was put in the board
   open--;
   
 //creates tmp, a 7 by 6 array that is a copy of either black or red, whichever is currently taking a turn

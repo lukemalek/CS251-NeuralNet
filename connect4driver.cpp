@@ -75,5 +75,4 @@ int totalMoves = 0;
 
     }
 
-    //quit();
 }
