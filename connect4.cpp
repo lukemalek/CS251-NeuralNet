@@ -173,13 +173,13 @@ float moveFloat = (float) moveNumber;
 //cout<<"MOVE Number: "<<moveNumber<<endl;
     if(blackWon){
       //cout<<moveNumber<<endl;
-      temp *= (.1*(1*((2*(moveFloat))/43)));
-      temp2 *= (.1*(6*(2*((43- (moveFloat)))/43))); 
+      temp *= (.01*(1*((2*(moveFloat))/43)));
+      temp2 *= (.01*(6*(2*((43- (moveFloat)))/43))); 
       //cout<<"0 or black won this one"<<endl;
     }
     if(blackWon == false){
-      temp *= (.1*(6*(2*(43 - (moveFloat))/43)));
-      temp2 *= (.1*(1*(2*((moveFloat)/43))));
+      temp *= (.01*(6*(2*(43 - (moveFloat))/43)));
+      temp2 *= (.01*(1*(2*((moveFloat)/43))));
       //cout<<"X or red won this one"<<endl;
     }
       
