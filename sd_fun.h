@@ -3,6 +3,7 @@
 #include<cstddef>
 #include<cstdlib>
 #include<climits>
+#include<string>
 #include<map>
 
 struct Range {
@@ -26,24 +27,38 @@ public:
 	int operator*() const { return curr; }
 };
 
-struct c_or_i {
-  const char *c;
-  int i;
-  c_or_i(const char *_c) : c(_c), i(INT_MIN) {}
-  c_or_i(int _i) : i(_i) {}
+struct str_or_num {
+  std::string str;
+  long long num_i;
+  double num_d;
+  enum {STRING, DOUBLE, LONG} kind;
+  str_or_num(const char *_s) : str(_s), kind(STRING) {}
+  str_or_num(std::string _s) : str(_s), kind(STRING) {}
+  str_or_num(char _i) : num_i(_i), kind(LONG) {}
+  str_or_num(short _i) : num_i(_i), kind(LONG) {}
+  str_or_num(int _i) : num_i(_i), kind(LONG) {}
+  str_or_num(unsigned int _i) : num_i(_i), kind(LONG) {}
+  str_or_num(long _i) : num_i(_i), kind(LONG) {}
+  str_or_num(std::size_t _i) : num_i(_i), kind(LONG) {}
+  str_or_num(long long _i) : num_i(_i), kind(LONG) {}
+  str_or_num(float _d) : num_d(_d), kind(DOUBLE) {}
+  str_or_num(double _d) : num_d(_d), kind(DOUBLE) {}
 };
 
 extern char *mem, *yaml, *query_str, *response;
 
 // from sd_fun.cpp
-extern void init();
-extern void quit();
+extern void init(const char *c = 0);
+extern void quit(const char *c = 0);
+extern bool just_starting();
 extern void initialize(char *&mem, char *&yaml);
 extern void initialize_empty(char *&mem, char *&yaml);
 extern void initialize_from_file(const char *fname, char *&mem, char *&yaml);
 extern void terminate(const char *buffer, const char *yaml);
 extern char *echo_string(const char *s);
 extern char *query_data_port(const char *query);
+extern std::string fetch(const char *url);
+extern std::string fetch(std::string url);
 extern void read_file_into_mem(const char *fname, char *mem, int start = 0);
 
 extern void check_equal(bool computed, bool correct);
@@ -85,7 +100,7 @@ extern void append(char *s, const char *pre, long long n, const char *post="");
 extern void append(char *s, const char *pre, std::size_t n, const char *post="");
 extern void append(char *s, const char *pre, double d, const char *post="");
 
-extern void add_yaml(const char *fname, std::map<std::string, c_or_i> m = {});
+extern void add_yaml(const char *fname, const std::map<std::string, str_or_num> &m = {});
 
 extern int index_of(const char *s, Range r, const char *query);
 extern int index_of(const char *s, int start, const char *query);
@@ -96,6 +111,8 @@ extern bool in(const char *s, int start, const char *query);
 extern bool in(const char *s, Range r, const char *query);
 extern bool was_pressed(const char *s, const char *query);
 extern bool was_pressed(const char *s, const char *query, int i);
+extern int was_picked(const char *s, const char *query);
+extern int was_picked(const char *s, const char *query, int i);
 extern int touch_pos_x(const char *s);
 extern int touch_pos_y(const char *s);
 extern int touch_start_pos_x(const char *s);

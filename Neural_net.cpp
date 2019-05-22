@@ -407,7 +407,7 @@ Network Network::gradient(vector<float> wo, float dropout)
             //for every weight
             for (int k = 0; k < v[i - 1]; k++)
             {
-                weightGradients[k] = dCdA * currentActivation * (1 - currentActivation) * (*myNet[i - 1])[k].getActivation();
+                weightGradients[k] = dCdA * currentActivation * (1 - currentActivation) * ((*myNet[i - 1])[k].getActivation());
             }
 
             //wrapping everything up and setting a node to it's gradient in the returned network
@@ -434,7 +434,7 @@ float Network::dCostdActivation(int l, int n, vector<float> wantO)
         int bounds = myNet[l + 1]->getSize();
         for (int i = 0; i < bounds; i++)
         {
-            value += dCostdActivation(l + 1, i, wantO) * (*myNet[l + 1])[i].getActivation() * (1 - (*myNet[l + 1])[i].getActivation()) * (*myNet[l + 1])[i].getWeight(n);
+            value += dCostdActivation(l + 1, i, wantO) * ((*myNet[l + 1])[i].getActivation()) * (1 - ((*myNet[l + 1])[i].getActivation())) * (*myNet[l + 1])[i].getWeight(n);
         }
         return value;
     }
