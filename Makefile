@@ -1,6 +1,6 @@
 OPTS = -Wall -g -std=c++11
 
-connect4driver: connect4driver.o
+connect4driver: connect4driver.o net_fun.o Neural_net.o sd_fun.o
 	g++ $(OPTS) -o connect4driver connect4driver.o net_fun.o Neural_net.o connect4.o -lm
 
 connect4driver.o: connect4driver.cpp connect4.o
