@@ -239,7 +239,11 @@ float moveFloat = (float) moveNumber;
         }
 
     } 
-
+    
+    for(int i=0; i<7;i++)
+      cout<<outputs[i]<<" ";
+    cout<<"\n";
+    
     //randomly chooses one of the elements of choices (the vestor with equal values) and sets that equal to choice
     int c = (int)(rnum()*(pos));
      choice = choices[c];   
