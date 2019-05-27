@@ -1,6 +1,56 @@
 #include"connect4.h"
 #include"sd_fun.h"
 
+/*
+int currentBoardID[7];
+  for(int i = 0; i<7; i++){
+    int sum = 0;
+    for(int j = 0; j < 6 ; j++){
+      double power = pow(3,j);
+      if(blackWon){
+	if(isRed[i][j]){
+	  sum+=(((int)power)*1);
+	}
+	if(isBlack[i][j]){
+	  sum+=(((int)(power))*2);
+	}
+      }else if (blackWon == false){
+	if(isRed[i][j]){
+	  sum+= (((int)(power))*2);
+	}
+	if(isBlack[i][j]){
+	  sum+= (((int)(power))*1);
+	}
+      }
+    }
+    currentBoardID[i] = sum;
+  }
+}
+*/
+
+void GameBoard::createBlankFile(string fileName){
+  ofstream file;
+  file.open(fileName.c_str());
+  for(int i = 0; i < 2187;i++){
+    for(int j = 0; j < 2187;j++){
+      for(int k = 0; k < 2187;k++){
+	for(int l = 0; l < 2187; l++){
+
+
+
+      for (int index = 0; index < 7; index++){
+	file<<1<<" ";
+      }
+      file<<"\n";
+
+
+
+	}
+      }
+    }
+  }
+}
+
 void GameBoard::initializeGameBoard(){
 
  numDiagonalWins=0;
@@ -57,6 +107,10 @@ for(int row = 5; row>= 0; row--)
   } else if (blackWon == false){
     numRedWins++;
   }
+    int moveFactorialWithAddition = 0;
+    for(int i = 1; i<= moveNumber; i++){
+      moveFactorialWithAddition += i;
+    }
 //this is the vector that will be filled in with either 1 or 0, willl be used as the argument for gradient
 //for each move, if the player won the game, the corresponding value of wanted that matches their selection will be 1 and all the other 6 will be zero
 //but if they lost, the value of wanted that matches their move will be 0 and the other 6 will be 1
@@ -70,8 +124,8 @@ for(int row = 5; row>= 0; row--)
 
 //loops through all moves that took place during the last game, starting from move number 0
     for(int index = 0; index < moveNumber; index++){
-
-
+      //cout<<moveNumber<<endl;
+      //cout<<numDiagonalWins<<numHorizontalWins<<numVerticalWins<<endl;
 //This first if else statement decides if a move was taken by learner or learner2,
 //the if part corresponds to learner 1
         if(index%2 == 0){
@@ -106,7 +160,7 @@ for(int row = 5; row>= 0; row--)
             //uses input storage for that move to recreate the inputs, and since no weight or biases have been changed yet, we get the exact same activations and final outputs from that move 
             learnerP->setInputLayer(inputStorage[index]);
             learnerP->evaluate();
-            temp += (learnerP->gradient(wanted, 0.1));
+            temp += ((learnerP->gradient(wanted))*= (((index+1)*moveNumber*moveNumber)/(moveFactorialWithAddition*moveNumber)));
             //totalCost+= learnerP->cost(wanted);
 
         }
@@ -143,7 +197,7 @@ for(int row = 5; row>= 0; row--)
             //same evaluation process, using leaerner2 and temp2 though
             learner2P->setInputLayer(inputStorage[index]);
             learner2P->evaluate();
-            temp2 += (learner2P->gradient(wanted, 0.1));
+            temp2 += ((learner2P->gradient(wanted))*=(((index+1)*moveNumber*moveNumber)/(moveNumber*moveFactorialWithAddition)));
             //totalCost+= learner2P->cost(wanted);
 
     }
@@ -165,7 +219,25 @@ float moveFloat = (float) moveNumber;
       temp *= (.01*(3*(2*(43 - (moveFloat))/43)));
       temp2 *= (.01*(1*(2*((moveFloat)/43))));
     }
-
+    
+    if(numVerticalWins == 1){
+      if(blackWon){
+	temp *= 0.5;
+	temp2 *= 1.5;
+      }else{
+	temp *= 1.5;
+	temp2 *= 0.5;
+      }
+    }
+    else{
+      if(blackWon){
+	temp *= 1.5;
+	temp2 *= 0.5;
+      }else{
+	temp *=0.5;
+	temp2 *=1.5; 
+      }
+    }
     //adds the gradients for this game to their corresponding networks and then saves the networks to their files.
     *(learnerP)-= temp;
     *(learner2P)-= temp2;

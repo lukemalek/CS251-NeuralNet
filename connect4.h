@@ -57,6 +57,8 @@ class GameBoard{
   int getMoveNumber(){return moveNumber;}
   int getNumChoices(){return numChoices;}
 
+  void createBlankFile(string fileName);
+
 //functions to play a game with
   void initializeGameBoard();
   void displayCurrentGameBoard();

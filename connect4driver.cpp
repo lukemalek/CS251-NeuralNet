@@ -10,10 +10,12 @@ int totalDiagWins = 0;
 int totalHorizWins = 0;
 int totalChoices = 0;
 int totalMoves = 0;
-
+ 
     srand(time(NULL));
     const vector<int> dimensions = {7*6*3,75,40, 7};
     GameBoard a;
+
+    //a.createBlankFile("testbullshit.net");
 
     bool playHuman = false;
     bool compGoesFirst = false;
