@@ -1,0 +1,7 @@
+View_31:
+  style:
+    marginLeft: {x}
+    width: 75
+    height: 75
+    borderRadius: 50%
+    backgroundColor: green

@@ -1,0 +1,12 @@
+View_{id}:
+  style:
+    width: 100
+    height: 100
+    backgroundColor: blue
+  children: [View_small]
+View_small:
+  style:
+    width: 25
+    height: 25
+    marginLeft: 25
+    backgroundColor: {bg}

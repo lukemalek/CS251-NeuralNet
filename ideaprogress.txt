@@ -1,0 +1,21 @@
+Halloo Butch
+
+
+Idea for how backprop will work
+
+Driver program will have 2 Networks:
+    Network a:The one that is being improved
+
+    Network temp: a net that will grow with the training data and gather what the 
+    next step along the gradient will be
+
+A Method of class Network called backpropogate, takes one arg, a vector<float>.
+This method will return a Network, with weights and biases set to the GRADIENT given
+the wanted output. here is sudocode
+
+for(int i = 0; i< subSetSize; i++)
+{
+    temp += a.backpropogate(wantedOutput);
+}
+temp /= subSetSize; 
+a -= temp; //going along neg gradient
