@@ -1,5 +1,14 @@
 Yo! 
 
+Update 10/05/22
+
+This somewhat-unruly repository houses all files of my CS251 Software Design Final Project. 
+This was a group project between me and a great friend/colleague/teammate named Eliott Cassidy.
+We set out to create a from-scratch, completely homemade neural network framework, then we applied it in various ways.
+
+Below is the original deployment instructions we had written back in 2019.
+
+
 simply running 
 "./presentation" 
 will compile every program that is worth demonstrating. It will also 
