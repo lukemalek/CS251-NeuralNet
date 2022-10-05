@@ -1,5 +1,3 @@
-Yo! 
-
 Update 10/05/22
 
 This somewhat-unruly repository houses all files of my CS251 Software Design Final Project. 
@@ -8,6 +6,8 @@ We set out to create a from-scratch, completely homemade neural network framewor
 
 Below is the original deployment instructions we had written back in 2019.
 
+
+Yo! 
 
 simply running 
 "./presentation" 
